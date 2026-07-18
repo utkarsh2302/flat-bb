@@ -39,8 +39,9 @@ import {
   type SnagStatus,
 } from "./data";
 import { unitAllIn } from "./pricing";
+import { dueOn, overdueDays, overdueInterest } from "./ledger";
 
-const PERSIST_KEY = "trimurty.app.v3";
+const PERSIST_KEY = "trimurty.app.v4";
 const HOLD_MS = 15 * 60 * 1000;
 const EOI = 51000;
 
@@ -74,6 +75,16 @@ export interface SiteVisit {
   slot: string;
 }
 
+export type ReminderChannel = "whatsapp" | "sms" | "email";
+export interface ReminderLog {
+  id: string;
+  bookingId: string;
+  demandId: string;
+  to: string; // buyer name
+  channel: ReminderChannel;
+  at: string; // ISO
+}
+
 export interface ActivityEvent {
   id: string;
   at: string; // ISO
@@ -95,6 +106,7 @@ export interface AppState {
   shortlist: string[]; // unit ids the buyer saved
   visits: SiteVisit[];
   partnerActive: Record<string, boolean>; // associate id -> active
+  reminders: ReminderLog[];
 }
 
 // ── seed ──────────────────────────────────────────────────────────────────
@@ -144,6 +156,7 @@ function seed(): AppState {
     shortlist: [],
     visits: [],
     partnerActive: Object.fromEntries(ASSOCIATES.map((a) => [a.id, true])),
+    reminders: [],
   };
 }
 
@@ -165,6 +178,8 @@ type Action =
   | { type: "CANCEL_BOOKING"; bookingId: string }
   | { type: "TOGGLE_PARTNER"; id: string }
   | { type: "RAISE_DEMAND"; bookingId: string; milestoneId: string }
+  | { type: "RAISE_DEMAND_ALL"; milestoneId: string }
+  | { type: "SEND_REMINDER"; rows: { bookingId: string; demandId: string; to: string }[]; channel: ReminderChannel }
   | { type: "RESET" };
 
 const SNAG_FLOW: SnagStatus[] = ["reported", "fixing", "fixed", "verified"];
@@ -409,6 +424,58 @@ function reducer(state: AppState, action: Action): AppState {
       };
     }
 
+    case "RAISE_DEMAND_ALL": {
+      const m = state.milestones.find((x) => x.id === action.milestoneId);
+      if (!m) return state;
+      const ledgers = { ...state.ledgers };
+      const today = new Date().toISOString().slice(0, 10);
+      let count = 0;
+      for (const b of state.bookings) {
+        if (state.unitStatus[b.unitId] !== "booked") continue;
+        const existing = (ledgers[b.id] ?? []).some((e) => e.kind === "demand" && e.milestoneId === m.id);
+        if (existing) continue;
+        const u = getUnit(b.unitId);
+        if (!u) continue;
+        const amount = Math.round((unitAllIn(u) * m.pct) / 100);
+        const entry: LedgerEntry = {
+          id: `${b.id}-dm-${m.id}`,
+          date: today,
+          kind: "demand",
+          particulars: `${m.label} (${m.pct}%)`,
+          milestoneId: m.id,
+          amount,
+          receiptNo: null,
+          mode: null,
+        };
+        ledgers[b.id] = [...(ledgers[b.id] ?? []), entry];
+        count++;
+      }
+      if (count === 0) return state;
+      return {
+        ...state,
+        ledgers,
+        activity: [ev("certify", `${m.label}: ${count} demand letters generated & dispatched`), ...state.activity].slice(0, 40),
+      };
+    }
+
+    case "SEND_REMINDER": {
+      if (action.rows.length === 0) return state;
+      const at = new Date().toISOString();
+      const logs: ReminderLog[] = action.rows.map((r, i) => ({
+        id: `rem${Date.now()}-${i}`,
+        bookingId: r.bookingId,
+        demandId: r.demandId,
+        to: r.to,
+        channel: action.channel,
+        at,
+      }));
+      return {
+        ...state,
+        reminders: [...logs, ...state.reminders].slice(0, 200),
+        activity: [ev("payment", `${logs.length} payment reminder${logs.length > 1 ? "s" : ""} sent via ${action.channel}`), ...state.activity].slice(0, 40),
+      };
+    }
+
     case "RESET":
       return seed();
 
@@ -435,6 +502,8 @@ interface Ctx {
   cancelBooking: (bookingId: string) => void;
   togglePartner: (id: string) => void;
   raiseDemand: (bookingId: string, milestoneId: string) => void;
+  raiseDemandAll: (milestoneId: string) => void;
+  sendReminder: (rows: { bookingId: string; demandId: string; to: string }[], channel: ReminderChannel) => void;
   reset: () => void;
 }
 
@@ -488,6 +557,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cancelBooking: (bookingId) => dispatch({ type: "CANCEL_BOOKING", bookingId }),
       togglePartner: (id) => dispatch({ type: "TOGGLE_PARTNER", id }),
       raiseDemand: (bookingId, milestoneId) => dispatch({ type: "RAISE_DEMAND", bookingId, milestoneId }),
+      raiseDemandAll: (milestoneId) => dispatch({ type: "RAISE_DEMAND_ALL", milestoneId }),
+      sendReminder: (rows, channel) => dispatch({ type: "SEND_REMINDER", rows, channel }),
       reset: () => dispatch({ type: "RESET" }),
     }),
     [s, ready],
@@ -532,6 +603,59 @@ export interface CollectionRowLive {
   demanded: number;
   paid: number;
   outstanding: number;
+}
+
+export interface DemandRow {
+  bookingId: string;
+  buyerName: string;
+  unitId: string;
+  towerId: string;
+  milestoneLabel: string;
+  demandId: string;
+  amount: number;
+  date: string;
+  dueOn: string;
+  overdueDays: number;
+  interest: number;
+  paid: boolean;
+  remindersCount: number;
+  lastRemindedAt: string | null;
+}
+
+/** Every demand across every booking, with due date, overdue days & interest. */
+export function allDemands(s: AppState, today: string): DemandRow[] {
+  const rows: DemandRow[] = [];
+  for (const b of s.bookings) {
+    const entries = s.ledgers[b.id] ?? [];
+    const totalPaid = entries.filter((e) => e.kind === "payment").reduce((t, e) => t - e.amount, 0);
+    const demands = entries.filter((e) => e.kind === "demand");
+    let cum = 0;
+    for (const d of demands) {
+      cum += d.amount;
+      const paid = totalPaid >= cum;
+      const due = dueOn(d.date);
+      const od = paid ? 0 : overdueDays(due, today);
+      const rem = s.reminders.filter((r) => r.demandId === d.id);
+      const u = getUnit(b.unitId);
+      rows.push({
+        bookingId: b.id,
+        buyerName: b.buyerName,
+        unitId: b.unitId,
+        towerId: u?.towerId ?? "",
+        milestoneLabel: d.particulars,
+        demandId: d.id,
+        amount: d.amount,
+        date: d.date,
+        dueOn: due,
+        overdueDays: od,
+        interest: paid ? 0 : overdueInterest(d.amount, od),
+        paid,
+        remindersCount: rem.length,
+        lastRemindedAt: rem[0]?.at ?? null,
+      });
+    }
+  }
+  return rows;
 }
 
 export function collectionsLive(s: AppState): CollectionRowLive[] {

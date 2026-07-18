@@ -30,6 +30,7 @@ const NAV: Record<Panel, { href: string; label: string }[]> = {
     { href: "/admin/bookings", label: "Bookings" },
     { href: "/admin/inventory", label: "Inventory" },
     { href: "/admin/collections", label: "Collections" },
+    { href: "/admin/demands", label: "Demands" },
     { href: "/admin/leads", label: "Leads" },
     { href: "/admin/partners", label: "Partners" },
     { href: "/admin/approvals", label: "Approvals" },
