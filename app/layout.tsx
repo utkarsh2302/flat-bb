@@ -4,6 +4,8 @@ import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import Toaster from "@/components/Toaster";
 import ServiceWorker from "@/components/ServiceWorker";
+import CommandPalette from "@/components/CommandPalette";
+import PlatformExtras from "@/components/PlatformExtras";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
@@ -48,6 +50,8 @@ export default function RootLayout({
         <AppProvider>
           {children}
           <Toaster />
+          <CommandPalette />
+          <PlatformExtras />
         </AppProvider>
         <ServiceWorker />
       </body>

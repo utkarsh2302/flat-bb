@@ -10,6 +10,7 @@ import {
   availability,
   type PortfolioProject,
 } from "@/lib/data";
+import SocialProof from "@/components/SocialProof";
 
 export default function HomePage() {
   const live = availability(UNITS);
@@ -73,6 +74,9 @@ export default function HomePage() {
             <a href="#projects" className="btn btn-ghost-light btn-lg">
               View our projects
             </a>
+          </div>
+          <div className="a-fadeup d3 mt-5">
+            <SocialProof />
           </div>
 
           <div className="a-fadeup d4 mt-12 flex flex-wrap items-center gap-x-8 gap-y-5">

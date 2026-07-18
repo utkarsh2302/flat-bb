@@ -8,6 +8,7 @@ import { inr, inrShort } from "@/lib/format";
 import { Eyebrow, StatTile } from "@/components/ui";
 import { useApp, ledgerTotalsFor } from "@/lib/store";
 import BookingDrawer from "@/components/BookingDrawer";
+import { downloadCsv } from "@/lib/csv";
 
 const NAME: Record<string, string> = Object.fromEntries(ASSOCIATES.map((a) => [a.id, a.name]));
 
@@ -25,11 +26,27 @@ export default function AdminBookings() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-5 py-8 sm:px-8">
-      <Eyebrow>Sales operations · live</Eyebrow>
-      <h1 className="t-serif-lg mt-2">Bookings</h1>
-      <p className="t-body-sm mt-2 text-body">
-        Every booking across the project — buyer, source, value and collections. Record a payment or cancel and release the unit.
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <Eyebrow>Sales operations · live</Eyebrow>
+          <h1 className="t-serif-lg mt-2">Bookings</h1>
+          <p className="t-body-sm mt-2 max-w-xl text-body">
+            Every booking across the project — buyer, source, value and collections. Open a file to manage KYC, the CLP schedule and payments.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() =>
+            downloadCsv("trimurty-bookings.csv", [
+              ["Booking", "Buyer", "Unit", "Source", "Value", "Collected", "Outstanding"],
+              ...rows.map((r) => [r.b.id, r.b.buyerName, r.b.unitId, r.b.associateId ? NAME[r.b.associateId] ?? "CP" : "Direct", r.value, r.paid, r.outstanding]),
+            ])
+          }
+          className="btn btn-tertiary !py-2 !px-4 !text-[14px]"
+        >
+          ⤓ Export CSV
+        </button>
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatTile label="Bookings" value={String(rows.length)} />

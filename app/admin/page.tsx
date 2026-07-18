@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { PROJECT } from "@/lib/data";
 import { inrShort } from "@/lib/format";
 import { Eyebrow, StatTile } from "@/components/ui";
@@ -9,6 +10,12 @@ import { useApp, liveAvailability, collectionsLive } from "@/lib/store";
 export default function AdminCockpit() {
   const { s } = useApp();
   const stats = liveAvailability(s);
+  const [weekCount, setWeekCount] = useState(0);
+  useEffect(() => {
+    const cut = Date.now() - 7 * 864e5;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setWeekCount(s.bookings.filter((b) => new Date(b.applied).getTime() >= cut).length);
+  }, [s.bookings]);
   const newLeads = s.leads.filter((l) => l.status === "new").length;
   const visits = s.leads.filter((l) => l.status === "visit_booked").length;
   const rows = collectionsLive(s);
@@ -31,6 +38,14 @@ export default function AdminCockpit() {
         <StatTile label="Booked units" value={String(stats.booked)} sub={`${stats.pctSold}% of inventory`} href="/admin/inventory" />
         <StatTile label="Collections" value={`${collectedPct}%`} sub={`${inrShort(collected)} of ${inrShort(demanded)}`} tone="ink" href="/admin/collections" />
         <StatTile label="Outstanding" value={inrShort(outstanding)} sub="across all buyers" tone="alert" href="/admin/collections" />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg bg-canvas-soft px-5 py-3 text-[14px]">
+        <span className="font-semibold text-ink">Velocity</span>
+        <span className="text-body"><span className="font-semibold text-ink tabular">{weekCount}</span> booked this week</span>
+        <span className="text-body"><span className="font-semibold text-ink tabular">{stats.pctSold}%</span> absorption</span>
+        <span className="text-body"><span className="font-semibold text-ink tabular">{stats.available}</span> homes left</span>
+        <Link href="/admin/audit" className="ml-auto font-semibold text-primary hover:underline">Audit log →</Link>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">

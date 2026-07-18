@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getUnit, getTower, UNITS } from "@/lib/data";
-
-export function generateStaticParams() {
-  return UNITS.map((u) => ({ unitId: u.id }));
-}
 import { computeCostSheet, emi } from "@/lib/pricing";
-import { sqft } from "@/lib/format";
+import { sqft, inr } from "@/lib/format";
+import { vastuScore } from "@/lib/vastu";
 import Compass, { FACING_LABEL } from "@/components/Compass";
 import SunPath from "@/components/SunPath";
 import UnitBookingCard from "@/components/UnitBookingCard";
 import UnitStickyBar from "@/components/UnitStickyBar";
 import Neighbourhood from "@/components/Neighbourhood";
-import { BackLink } from "@/components/ui";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PossessionCountdown from "@/components/PossessionCountdown";
+import { RecordView } from "@/components/RecentlyViewed";
+
+export function generateStaticParams() {
+  return UNITS.map((u) => ({ unitId: u.id }));
+}
 
 export default async function UnitPage({
   params,
@@ -25,12 +28,20 @@ export default async function UnitPage({
   const tower = getTower(unit.towerId)!;
   const cost = computeCostSheet(unit);
   const monthly = emi(Math.round(cost.grandTotal * 0.8), 8.5, 20);
+  const vastu = vastuScore(unit.facing, unit.vastuEntrance);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-5 pt-8 pb-28 sm:px-8 sm:pb-8">
-      <BackLink href={`/explore/${unit.towerId}/${unit.floor}`}>
-        Floor {unit.floor}, {tower.name}
-      </BackLink>
+    <div className="mx-auto max-w-[1280px] px-5 pt-6 pb-28 sm:px-8 sm:pb-8">
+      <RecordView unitId={unit.id} />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Explore", href: "/explore" },
+          { label: tower.name, href: `/explore/${unit.towerId}` },
+          { label: `Floor ${unit.floor}`, href: `/explore/${unit.towerId}/${unit.floor}` },
+          { label: `${unit.bhk} BHK · ${unit.id}` },
+        ]}
+      />
 
       <h1 className="t-display-lg mt-3">
         {unit.bhk} BHK · {tower.name}
@@ -39,6 +50,15 @@ export default async function UnitPage({
         {unit.id} · Floor {unit.floor} · {sqft(unit.superSqft)} super
         {unit.viewTags.length > 0 ? ` · ${unit.viewTags.join(" · ")}` : ""}
       </p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <PossessionCountdown />
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-canvas-soft px-3 py-1 text-[13px] font-medium text-ink">
+          🧭 Vastu {vastu.score}/100 · {vastu.label}
+        </span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-canvas-soft px-3 py-1 text-[13px] font-medium text-ink">
+          ₹{inr(cost.perSqftAllIn).replace("₹", "")}/sq.ft all-in · no hidden charges
+        </span>
+      </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_1fr]">
         {/* Left: plan, sun-path */}

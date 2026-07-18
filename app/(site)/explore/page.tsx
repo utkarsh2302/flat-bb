@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { TOWERS, unitsOfTower, availability } from "@/lib/data";
 import { Eyebrow, AvailabilityLegend } from "@/components/ui";
+import FindMyHome from "@/components/FindMyHome";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 export const metadata = { title: "Explore homes — Trimurty" };
 
 export default function ExplorePage() {
   return (
-    <div className="mx-auto max-w-[1280px] px-6 py-12">
+    <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-8">
       <Eyebrow>Live inventory</Eyebrow>
       <h1 className="t-display-lg mt-3">Pick a tower to explore</h1>
       <p className="t-body-md mt-3 max-w-xl text-body">
@@ -15,6 +17,10 @@ export default function ExplorePage() {
       </p>
 
       <div className="mt-6">
+        <FindMyHome />
+      </div>
+
+      <div className="mt-8">
         <AvailabilityLegend />
       </div>
 
@@ -48,6 +54,8 @@ export default function ExplorePage() {
           );
         })}
       </div>
+
+      <RecentlyViewed />
     </div>
   );
 }

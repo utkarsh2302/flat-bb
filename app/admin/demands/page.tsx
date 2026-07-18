@@ -5,6 +5,7 @@ import { getTower } from "@/lib/data";
 import { inr, inrShort, inDate } from "@/lib/format";
 import { Eyebrow, StatTile } from "@/components/ui";
 import { useApp, allDemands, type DemandRow } from "@/lib/store";
+import { downloadCsv } from "@/lib/csv";
 
 export default function AdminDemands() {
   const { s, raiseDemandAll, sendReminder } = useApp();
@@ -31,11 +32,27 @@ export default function AdminDemands() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-5 py-8 sm:px-8">
-      <Eyebrow>Collections engine · live</Eyebrow>
-      <h1 className="t-serif-lg mt-2">Demand letters</h1>
-      <p className="t-body-sm mt-2 text-body">
-        Generate milestone demands in bulk, watch interest accrue on overdue dues, and chase collections on WhatsApp, SMS or email — with a full dispatch log.
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <Eyebrow>Collections engine · live</Eyebrow>
+          <h1 className="t-serif-lg mt-2">Demand letters</h1>
+          <p className="t-body-sm mt-2 max-w-xl text-body">
+            Generate milestone demands in bulk, watch interest accrue on overdue dues, and chase collections on WhatsApp, SMS or email — with a full dispatch log.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() =>
+            downloadCsv("trimurty-demands.csv", [
+              ["Buyer", "Unit", "Milestone", "Amount", "Due", "Overdue days", "Interest", "Status"],
+              ...rows.map((r) => [r.buyerName, r.unitId, r.milestoneLabel, r.amount, r.dueOn, r.overdueDays, r.interest, r.paid ? "Paid" : r.overdueDays > 0 ? "Overdue" : "Outstanding"]),
+            ])
+          }
+          className="btn btn-tertiary !py-2 !px-4 !text-[14px]"
+        >
+          ⤓ Export CSV
+        </button>
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatTile label="Outstanding demands" value={inrShort(outstanding)} />

@@ -17,6 +17,7 @@ export default function VisitPage() {
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
   const [slot, setSlot] = useState(SLOTS[0]);
+  const [mode, setMode] = useState<"person" | "video">("person");
   const [err, setErr] = useState<Record<string, string>>({});
   const [done, setDone] = useState<{ date: string; slot: string } | null>(null);
 
@@ -38,8 +39,9 @@ export default function VisitPage() {
     if (!date) e.date = "Pick a date.";
     setErr(e);
     if (Object.keys(e).length) return;
-    bookVisit({ id: `V${Date.now()}`, unitId, name: name.trim(), phone: phone.trim(), date, slot });
-    setDone({ date, slot });
+    const fullSlot = `${slot}${mode === "video" ? " · Video call" : ""}`;
+    bookVisit({ id: `V${Date.now()}`, unitId, name: name.trim(), phone: phone.trim(), date, slot: fullSlot });
+    setDone({ date, slot: fullSlot });
   }
 
   if (done) {
@@ -95,6 +97,20 @@ export default function VisitPage() {
             </select>
           </Field>
         </div>
+        <Field label="How would you like to visit?">
+          <div className="flex gap-2">
+            {([["person", "🏠 In person"], ["video", "📹 Video call"]] as const).map(([m, label]) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMode(m)}
+                className={`flex-1 rounded-md border px-3 py-2.5 text-[14px] font-semibold ${mode === m ? "border-primary bg-canvas-soft text-ink" : "border-line text-body hover:text-ink"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </Field>
         <button type="button" onClick={submit} className="btn btn-primary btn-lg w-full">
           Request visit
         </button>

@@ -5,6 +5,7 @@ import { inr, inrShort } from "@/lib/format";
 import { Eyebrow, StatTile } from "@/components/ui";
 import BulkReminder from "@/components/BulkReminder";
 import { useApp, collectionsLive } from "@/lib/store";
+import { downloadCsv } from "@/lib/csv";
 
 export default function AdminCollections() {
   const { s } = useApp();
@@ -22,9 +23,25 @@ export default function AdminCollections() {
 
   return (
     <div className="mx-auto max-w-[1100px] px-5 py-8 sm:px-8">
-      <Eyebrow>Cash flow · live</Eyebrow>
-      <h1 className="t-serif-lg mt-2">Collections cockpit</h1>
-      <p className="t-body-sm mt-2 text-body">Where the money is, what&apos;s outstanding, and one tap to chase it. Updates as buyers pay.</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <Eyebrow>Cash flow · live</Eyebrow>
+          <h1 className="t-serif-lg mt-2">Collections cockpit</h1>
+          <p className="t-body-sm mt-2 max-w-xl text-body">Where the money is, what&apos;s outstanding, and one tap to chase it. Updates as buyers pay.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() =>
+            downloadCsv("trimurty-collections.csv", [
+              ["Buyer", "Unit", "Tower", "Demanded", "Paid", "Outstanding"],
+              ...rows.map((r) => [r.buyerName, r.unitId, getTower(r.towerId)?.name ?? "", r.demanded, r.paid, r.outstanding]),
+            ])
+          }
+          className="btn btn-tertiary !py-2 !px-4 !text-[14px]"
+        >
+          ⤓ Export CSV
+        </button>
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatTile label="Demanded" value={inrShort(demanded)} />

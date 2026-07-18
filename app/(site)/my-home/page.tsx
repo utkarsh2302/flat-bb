@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PROGRESS_FEED, getUnit, getTower } from "@/lib/data";
 import { inr, inrShort } from "@/lib/format";
 import PhotoBlock from "@/components/PhotoBlock";
+import PossessionCountdown from "@/components/PossessionCountdown";
 import { Eyebrow } from "@/components/ui";
 import { useApp, primaryBooking, ledgerTotalsFor, myBookings } from "@/lib/store";
 
@@ -42,6 +43,7 @@ export default function MyHomePage() {
         {unit.bhk} BHK · {tower.name} · Floor {unit.floor} · {unit.id}
         {mine.length > 1 && <> · <span className="text-body-mid">{mine.length} bookings</span></>}
       </p>
+      <div className="mt-3"><PossessionCountdown /></div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {/* Next payment */}

@@ -10,11 +10,18 @@ export default function EmiCalculator({ initialPrice }: { initialPrice: number }
   const [rate, setRate] = useState(8.5);
   const [years, setYears] = useState(20);
   const [rent, setRent] = useState(28000);
+  const [budget, setBudget] = useState(85000);
 
   const loan = Math.round(price * (1 - downPct / 100));
   const monthly = emi(loan, rate, years);
   const totalPaid = monthly * years * 12;
   const totalInterest = totalPaid - loan;
+
+  // Reverse EMI — what a monthly budget can afford
+  const r = rate / 100 / 12;
+  const n = years * 12;
+  const maxLoan = r === 0 ? budget * n : Math.round((budget * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n)));
+  const maxPrice = Math.round(maxLoan / (1 - downPct / 100));
 
   return (
     <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">
@@ -25,6 +32,7 @@ export default function EmiCalculator({ initialPrice }: { initialPrice: number }
         <Slider label="Interest rate" value={rate} min={7} max={12} step={0.1} onChange={setRate} display={`${rate.toFixed(1)}%`} />
         <Slider label="Loan tenure" value={years} min={5} max={30} step={1} onChange={setYears} display={`${years} years`} />
         <Slider label="Comparable rent / month" value={rent} min={8000} max={120000} step={1000} onChange={setRent} display={inr(rent)} />
+        <Slider label="I can pay / month (affordability)" value={budget} min={20000} max={300000} step={5000} onChange={setBudget} display={inr(budget)} />
       </div>
 
       {/* Results */}
@@ -58,6 +66,15 @@ export default function EmiCalculator({ initialPrice }: { initialPrice: number }
               </>
             )}
           </p>
+        </div>
+
+        <div className="rounded-md bg-canvas-soft p-5">
+          <p className="text-[15px] font-semibold text-ink">What you can afford</p>
+          <p className="mt-1 text-[14px] text-body">
+            At <span className="font-semibold text-ink tabular">{inr(budget)}</span>/month, {rate.toFixed(1)}% for {years} years:
+          </p>
+          <p className="mt-2 text-[24px] font-semibold text-ink tabular">up to {inrShort(maxPrice)}</p>
+          <p className="text-[13px] text-body-mid">≈ {inrShort(maxLoan)} loan + {downPct}% down</p>
         </div>
       </div>
     </div>
