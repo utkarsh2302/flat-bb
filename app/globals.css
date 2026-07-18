@@ -172,6 +172,11 @@ body {
   @starting-style {
     .menu-pop { opacity: 0; transform: scale(0.97) translateY(-6px); }
   }
+  /* Right-side drawer (booking file, etc.) */
+  .drawer { transition: transform 280ms var(--e-drawer); }
+  @starting-style { .drawer { transform: translateX(100%); } }
+  .drawer-overlay { transition: opacity 200ms ease; }
+  @starting-style { .drawer-overlay { opacity: 0; } }
   .glass { background: color-mix(in srgb, var(--color-canvas) 72%, transparent); backdrop-filter: saturate(1.4) blur(14px); }
   .glass-dark { background: color-mix(in srgb, #120c0a 42%, transparent); backdrop-filter: blur(10px); }
   .hairline { border: 1px solid var(--color-line); }

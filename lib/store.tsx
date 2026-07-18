@@ -164,6 +164,7 @@ type Action =
   | { type: "BOOK_VISIT"; visit: SiteVisit }
   | { type: "CANCEL_BOOKING"; bookingId: string }
   | { type: "TOGGLE_PARTNER"; id: string }
+  | { type: "RAISE_DEMAND"; bookingId: string; milestoneId: string }
   | { type: "RESET" };
 
 const SNAG_FLOW: SnagStatus[] = ["reported", "fixing", "fixed", "verified"];
@@ -380,6 +381,34 @@ function reducer(state: AppState, action: Action): AppState {
         partnerActive: { ...state.partnerActive, [action.id]: !(state.partnerActive[action.id] ?? true) },
       };
 
+    case "RAISE_DEMAND": {
+      const b = state.bookings.find((x) => x.id === action.bookingId);
+      const m = state.milestones.find((x) => x.id === action.milestoneId);
+      if (!b || !m) return state;
+      const existing = (state.ledgers[action.bookingId] ?? []).some(
+        (e) => e.kind === "demand" && e.milestoneId === action.milestoneId,
+      );
+      if (existing) return state;
+      const u = getUnit(b.unitId);
+      if (!u) return state;
+      const amount = Math.round((unitAllIn(u) * m.pct) / 100);
+      const entry: LedgerEntry = {
+        id: `${b.id}-dm-${m.id}`,
+        date: new Date().toISOString().slice(0, 10),
+        kind: "demand",
+        particulars: `${m.label} (${m.pct}%)`,
+        milestoneId: m.id,
+        amount,
+        receiptNo: null,
+        mode: null,
+      };
+      return {
+        ...state,
+        ledgers: { ...state.ledgers, [action.bookingId]: [...(state.ledgers[action.bookingId] ?? []), entry] },
+        activity: [ev("certify", `Demand raised: ${m.label} · ${b.unitId} (${b.buyerName})`), ...state.activity].slice(0, 40),
+      };
+    }
+
     case "RESET":
       return seed();
 
@@ -405,6 +434,7 @@ interface Ctx {
   bookVisit: (visit: SiteVisit) => void;
   cancelBooking: (bookingId: string) => void;
   togglePartner: (id: string) => void;
+  raiseDemand: (bookingId: string, milestoneId: string) => void;
   reset: () => void;
 }
 
@@ -457,6 +487,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       bookVisit: (visit) => dispatch({ type: "BOOK_VISIT", visit }),
       cancelBooking: (bookingId) => dispatch({ type: "CANCEL_BOOKING", bookingId }),
       togglePartner: (id) => dispatch({ type: "TOGGLE_PARTNER", id }),
+      raiseDemand: (bookingId, milestoneId) => dispatch({ type: "RAISE_DEMAND", bookingId, milestoneId }),
       reset: () => dispatch({ type: "RESET" }),
     }),
     [s, ready],

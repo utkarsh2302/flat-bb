@@ -1,16 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { getUnit, getTower, ASSOCIATES } from "@/lib/data";
 import { unitAllIn } from "@/lib/pricing";
 import { inr, inrShort } from "@/lib/format";
 import { Eyebrow, StatTile } from "@/components/ui";
 import { useApp, ledgerTotalsFor } from "@/lib/store";
+import BookingDrawer from "@/components/BookingDrawer";
 
 const NAME: Record<string, string> = Object.fromEntries(ASSOCIATES.map((a) => [a.id, a.name]));
 
 export default function AdminBookings() {
-  const { s, pay, cancelBooking } = useApp();
+  const { s, pay } = useApp();
+  const [selected, setSelected] = useState<string | null>(null);
   const rows = s.bookings.map((b) => {
     const u = getUnit(b.unitId);
     const t = ledgerTotalsFor(s, b.id);
@@ -71,22 +74,22 @@ export default function AdminBookings() {
                 <td className="px-4 py-3 text-right font-semibold text-ink tabular">{inr(r.outstanding)}</td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelected(r.b.id)}
+                      className="rounded-sm bg-ink px-2.5 py-1 text-[12px] font-semibold text-on-primary press"
+                    >
+                      Open file
+                    </button>
                     {r.outstanding > 0 && (
                       <button
                         type="button"
                         onClick={() => pay(r.b.id, r.outstanding, "Payment recorded at office")}
-                        className="rounded-sm bg-ink px-2.5 py-1 text-[12px] font-semibold text-on-primary press"
+                        className="rounded-sm border border-line px-2.5 py-1 text-[12px] font-semibold text-body hover:text-ink press"
                       >
-                        Record payment
+                        Collect
                       </button>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => { if (confirm(`Cancel ${r.b.id} and release ${r.b.unitId}?`)) cancelBooking(r.b.id); }}
-                      className="rounded-sm border border-line px-2.5 py-1 text-[12px] font-semibold text-body hover:text-primary press"
-                    >
-                      Cancel
-                    </button>
                   </div>
                 </td>
               </tr>
@@ -101,6 +104,8 @@ export default function AdminBookings() {
         Cancelling releases the unit back to available inventory and reverses its commission — reflected instantly across all panels.
         <Link href="/admin/collections" className="ml-1 font-semibold text-primary hover:underline">Open collections →</Link>
       </p>
+
+      <BookingDrawer bookingId={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }
