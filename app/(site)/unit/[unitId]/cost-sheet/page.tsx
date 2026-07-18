@@ -1,5 +1,9 @@
 import { notFound } from "next/navigation";
-import { getUnit, getTower, PROJECT } from "@/lib/data";
+import { getUnit, getTower, PROJECT, UNITS } from "@/lib/data";
+
+export function generateStaticParams() {
+  return UNITS.map((u) => ({ unitId: u.id }));
+}
 import { computeCostSheet } from "@/lib/pricing";
 import { inr, inrShort, sqft, inDateFriendly } from "@/lib/format";
 import { FACING_LABEL } from "@/components/Compass";

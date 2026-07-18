@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { getUnit, getTower, UNITS, type Unit } from "@/lib/data";
 import { unitAllIn } from "@/lib/pricing";
 import { inr, inrShort, sqft } from "@/lib/format";
@@ -6,36 +9,28 @@ import { FACING_LABEL } from "@/components/Compass";
 import StatusBadge from "@/components/StatusBadge";
 import { Eyebrow } from "@/components/ui";
 
-export const metadata = { title: "Compare homes — Trimurty" };
+export default function ComparePage() {
+  const [ids, setIds] = useState<string[]>([]);
 
-export default async function ComparePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ u?: string }>;
-}) {
-  const { u } = await searchParams;
-  const ids = (u ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .slice(0, 3);
+  useEffect(() => {
+    const u = new URLSearchParams(window.location.search).get("u") ?? "";
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIds(u.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 3));
+  }, []);
+
   const units = ids.map((id) => getUnit(id)).filter((x): x is Unit => Boolean(x));
-
-  const suggestions = UNITS.filter(
-    (x) => x.status === "available" && !ids.includes(x.id),
-  ).slice(0, 4);
+  const suggestions = UNITS.filter((x) => x.status === "available" && !ids.includes(x.id)).slice(0, 4);
 
   return (
-    <div className="mx-auto max-w-[1000px] px-6 py-10">
+    <div className="mx-auto max-w-[1000px] px-5 py-10 sm:px-8">
       <Eyebrow>Side by side</Eyebrow>
-      <h1 className="t-display-lg mt-3">Compare flats</h1>
+      <h1 className="t-serif-lg mt-3">Compare flats</h1>
       <p className="t-body-md mt-3 max-w-xl text-body">
-        Compare up to 3 flats on price, area, facing and floor — the way a family
-        actually decides.
+        Compare up to 3 flats on price, area, facing and floor — the way a family actually decides.
       </p>
 
       {units.length === 0 ? (
-        <p className="mt-8 rounded-md bg-canvas-soft p-6 text-[16px] text-body">
+        <p className="mt-8 card p-6 text-[16px] text-body">
           No flats picked yet. Open any flat and tap <span className="font-semibold text-ink">“Compare”</span>, or add one below.
         </p>
       ) : (
@@ -67,9 +62,7 @@ export default async function ComparePage({
                 label=""
                 units={units}
                 render={(u) => (
-                  <Link href={`/unit/${u.id}`} className="text-[14px] font-semibold text-primary hover:underline">
-                    Open flat →
-                  </Link>
+                  <Link href={`/unit/${u.id}`} className="text-[14px] font-semibold text-primary hover:underline">Open flat →</Link>
                 )}
               />
             </tbody>
@@ -81,18 +74,20 @@ export default async function ComparePage({
         <div className="mt-10">
           <p className="text-[15px] font-semibold text-ink">Add another flat</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {suggestions.map((s) => {
-              const next = [...ids, s.id].join(",");
-              return (
-                <Link
-                  key={s.id}
-                  href={`/compare?u=${next}`}
-                  className="rounded-full border border-ink/20 bg-canvas px-4 py-2 text-[14px] text-ink hover:border-primary"
-                >
-                  + {s.id} · {s.bhk} BHK · {inrShort(unitAllIn(s))}
-                </Link>
-              );
-            })}
+            {suggestions.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => {
+                  const next = [...ids, s.id].slice(0, 3);
+                  setIds(next);
+                  window.history.replaceState(null, "", `/compare?u=${next.join(",")}`);
+                }}
+                className="press rounded-full border border-line bg-canvas px-4 py-2 text-[14px] text-ink hover:border-primary"
+              >
+                + {s.id} · {s.bhk} BHK · {inrShort(unitAllIn(s))}
+              </button>
+            ))}
           </div>
         </div>
       )}
@@ -100,22 +95,12 @@ export default async function ComparePage({
   );
 }
 
-function CompareRow({
-  label,
-  units,
-  render,
-}: {
-  label: string;
-  units: Unit[];
-  render: (u: Unit) => React.ReactNode;
-}) {
+function CompareRow({ label, units, render }: { label: string; units: Unit[]; render: (u: Unit) => React.ReactNode }) {
   return (
     <tr>
-      <td className="border-t border-ink/10 p-3 text-[14px] font-medium text-body-mid">{label}</td>
+      <td className="border-t border-line p-3 text-[14px] font-medium text-body-mid">{label}</td>
       {units.map((u) => (
-        <td key={u.id} className="border-t border-ink/10 p-3 text-[15px] text-ink">
-          {render(u)}
-        </td>
+        <td key={u.id} className="border-t border-line p-3 text-[15px] text-ink">{render(u)}</td>
       ))}
     </tr>
   );

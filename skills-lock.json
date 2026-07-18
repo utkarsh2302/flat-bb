@@ -49,6 +49,18 @@
       "skillPath": "skills/research-and-web/browser-harness/SKILL.md",
       "computedHash": "f9af84a8a803769e45726de63129f2f2ae17e9aa0445a0d5b3f52b0438aa7b82"
     },
+    "canvas-generative": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/canvas-generative/SKILL.md",
+      "computedHash": "c7375289c298afb276d5d467cb309dcd213e110541d046c7de440cc221e8c572"
+    },
+    "cast": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/cast/SKILL.md",
+      "computedHash": "b9d02b1cce66de722f36e19f3af9977819d5489630e051f32f64c2460a9a2b56"
+    },
     "claude-handoff": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -79,11 +91,35 @@
       "skillPath": "skills/agent-orchestration/codex-subagent/SKILL.md",
       "computedHash": "cb46fedc0b523be16a8ac62afbfb9186d37124b56113cffe81c650d6520a5cea"
     },
+    "compose-graphics": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/compose-graphics/SKILL.md",
+      "computedHash": "dd419a512e3ca5245db6e0b1390ca19162e0f5ac06a99a50525cd47af4015ed6"
+    },
+    "compose-motion": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/compose-motion/SKILL.md",
+      "computedHash": "074a64ab0508f2e76da294fe442b5d3f1d95a5c3518f4c810b940a840338f848"
+    },
+    "compose-multiplatform": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/compose-multiplatform/SKILL.md",
+      "computedHash": "c815710fc80612e6ec3fa45f89943f36cc21bf01f1258811c92166c1ecd30662"
+    },
     "create-readonly-db-role": {
       "source": "davidondrej/skills",
       "sourceType": "github",
       "skillPath": "skills/ops-and-setup/create-readonly-db-role/SKILL.md",
       "computedHash": "2e3e4cbc7b19460a5b5c8384b3489b139beec5f21a630bfdb8b13dd62bebb4cf"
+    },
+    "css-native": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/css-native/SKILL.md",
+      "computedHash": "ffbe0a8dc35f6bd4b3151fc815a73759ae96b236d801be254e1cfe70d3fff237"
     },
     "cyber-audit": {
       "source": "davidondrej/skills",
@@ -114,6 +150,24 @@
       "sourceType": "github",
       "skillPath": "skills/deprecated/design-an-interface/SKILL.md",
       "computedHash": "aef348a9af675b771635623b5aa7790da4d40adc1ee88b58b6fd116eda2047d8"
+    },
+    "design-audit": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/design-audit/SKILL.md",
+      "computedHash": "8b60ee1adaed996257724fc0c5d6eabc37edd966e997018018e96b050a27a158"
+    },
+    "design-dna": {
+      "source": "zanwei/design-dna",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "56b76cd0743e80d98ee5060e42f237474d3624f42f33854f119efb0d1a339d0c"
+    },
+    "desktop-principles": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/desktop-principles/SKILL.md",
+      "computedHash": "e1006a145e83654eaa98c547af78cffaf76815f119a50d8121bf3f6edd2e8e1b"
     },
     "diagnosing-bugs": {
       "source": "mattpocock/skills",
@@ -175,6 +229,12 @@
       "skillPath": "skills/skill-authoring/folder-specific-claude-and-agents-md/SKILL.md",
       "computedHash": "63f5dca3befe7334c12fb12a33aebb5d019e2d58fdb1eeb3a19ef9b195254e52"
     },
+    "framer-motion": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/framer-motion/SKILL.md",
+      "computedHash": "d734e0e926e280519ce5b4034c1e2b70066ac3e82f1bcd0ba8995222681545af"
+    },
     "git-guardrails-claude-code": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -216,6 +276,12 @@
       "sourceType": "github",
       "skillPath": "skills/productivity/grilling/SKILL.md",
       "computedHash": "368d3dd7251247c69f3656d93dc83c8f1577792eacac2111f1e7981db2ece49b"
+    },
+    "gsap": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/gsap/SKILL.md",
+      "computedHash": "deda25de6fa9110715634b01cb8980241be07527431d3ac1e23ae92a86f0a519"
     },
     "handoff": {
       "source": "davidondrej/skills",
@@ -271,6 +337,24 @@
       "skillPath": "skills/misc/migrate-to-shoehorn/SKILL.md",
       "computedHash": "6397731ced114f3657aa88b55ed13d1344a56d77ca449c568e3200c21740fa99"
     },
+    "mobile-principles": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/mobile-principles/SKILL.md",
+      "computedHash": "dd049342ffa56812dc74a418592de73010591ffd46312baa7a026461891db6b5"
+    },
+    "motion-design": {
+      "source": "lottiefiles/motion-design-skill",
+      "sourceType": "github",
+      "skillPath": "skills/motion-design/SKILL.md",
+      "computedHash": "9fcf9130cc46ee8fd1d8e09a9263347a9d76efbcbfa46591cc4cefaf19bbb453"
+    },
+    "motion-principles": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/motion-principles/SKILL.md",
+      "computedHash": "fcad1966bce4f4d3b1051adbc540a9ea9e0320daad87d828d1b16d9b2e141f47"
+    },
     "obsidian-vault": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -282,6 +366,12 @@
       "sourceType": "github",
       "skillPath": "skills/research-and-web/online-shopping/SKILL.md",
       "computedHash": "27f073ccbb051075e69673678a4bcf7848170e7c1d2790cd6408b2ba56950cc9"
+    },
+    "paint": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/paint/SKILL.md",
+      "computedHash": "3596ae3e6ffe6136f853ba3073378e1c8350ac20b3d2f590b229810a5992ab95"
     },
     "pi-custom-model": {
       "source": "davidondrej/skills",
@@ -409,6 +499,18 @@
       "skillPath": "skills/thinking-and-docs/short/SKILL.md",
       "computedHash": "aa4874783a7845f9100e2055c529d2737dbdc297619c023ea0020137aab37797"
     },
+    "swiftui-graphics": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/swiftui-graphics/SKILL.md",
+      "computedHash": "d3b71c3bd99517fee3eae0aef28fb40b637a7b368744dcb75f63e0f28652138d"
+    },
+    "swiftui-motion": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/swiftui-motion/SKILL.md",
+      "computedHash": "77dfadf5951293519fdf4d3e383040c567c5f868ca78bf3eef251030f33d1c99"
+    },
     "tdd": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -420,6 +522,72 @@
       "sourceType": "github",
       "skillPath": "skills/thinking-and-docs/teach/SKILL.md",
       "computedHash": "e761a66cd8453c62ac13a74615b6fa50dec220d47004c35e6b2d8645eef0390b"
+    },
+    "threejs-animation": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-animation/SKILL.md",
+      "computedHash": "8c50b1493812bd88f3ed0637c0c3c5d846afdb322157b67b2ffba4ce8e552835"
+    },
+    "threejs-fundamentals": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-fundamentals/SKILL.md",
+      "computedHash": "e08d49571071f0f54ef2a76fdfcb96c16673e4fda478067727def4659feb80ca"
+    },
+    "threejs-geometry": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-geometry/SKILL.md",
+      "computedHash": "4e5757bf80a329810545c237e557e362fa14fd3a3e6a567ec1d75435be6b2dda"
+    },
+    "threejs-interaction": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-interaction/SKILL.md",
+      "computedHash": "988d235b7ebd85276a584c6f81ce7c801280ebc45b401017b334136dc8a7ec82"
+    },
+    "threejs-lighting": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-lighting/SKILL.md",
+      "computedHash": "9303d1b8a9704e88415e5a98c98ad7b6e0f654f8029a3606af7947c0efcb86cc"
+    },
+    "threejs-loaders": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-loaders/SKILL.md",
+      "computedHash": "f2cceed635fd7a2119acf6e5b1a2fcba63a0e52cf2514c1830a69e4744554fcc"
+    },
+    "threejs-materials": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-materials/SKILL.md",
+      "computedHash": "201cf0f3720c0ea9e415e6376b8ad389aa86b483875e87ca0e51aa2770c856aa"
+    },
+    "threejs-postprocessing": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-postprocessing/SKILL.md",
+      "computedHash": "48e04ff507582a18e0d509c2738b9d9466881b00e8ca2600727910a0d52abf75"
+    },
+    "threejs-r3f": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/threejs-r3f/SKILL.md",
+      "computedHash": "ff6129e1f97c2bcb2beebfd6f7ada96a3e19346fcfbaed7f8dfb382b0277d38c"
+    },
+    "threejs-shaders": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-shaders/SKILL.md",
+      "computedHash": "649ceb058edfb5cfd51e80fb3a6c57aca9bab4a9d3a03f6077aa9502be0c0771"
+    },
+    "threejs-textures": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-textures/SKILL.md",
+      "computedHash": "772a0bfc1d64cfcbc5347d206584a8fa412983201ad7a2cfb8766097b4936db9"
     },
     "to-questionnaire": {
       "source": "mattpocock/skills",
@@ -450,6 +618,12 @@
       "sourceType": "github",
       "skillPath": "skills/deprecated/ubiquitous-language/SKILL.md",
       "computedHash": "0395170031b57ea63f2eb22561542894c03e3047430a2f1118a06b411054429b"
+    },
+    "ui-ux-pro-max": {
+      "source": "AThevon/genjutsu",
+      "sourceType": "github",
+      "skillPath": "skills/_jutsu/ui-ux-pro-max/SKILL.md",
+      "computedHash": "0d2c3bb7bdaca11146efaf469a176b20dc20d6d7f60ab1e690540c3a84dc0958"
     },
     "vps-server-management": {
       "source": "davidondrej/skills",

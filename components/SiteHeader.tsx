@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import NotificationsBell from "@/components/NotificationsBell";
@@ -18,14 +19,19 @@ const NAV: Record<Panel, { href: string; label: string }[]> = {
   ],
   broker: [
     { href: "/broker", label: "Dashboard" },
-    { href: "/broker/inventory", label: "Inventory" },
     { href: "/broker/leads", label: "Leads" },
+    { href: "/broker/inventory", label: "Inventory" },
+    { href: "/broker/bookings", label: "Bookings" },
     { href: "/broker/commissions", label: "Commissions" },
+    { href: "/broker/marketing", label: "Marketing" },
   ],
   admin: [
     { href: "/admin", label: "Cockpit" },
+    { href: "/admin/bookings", label: "Bookings" },
     { href: "/admin/inventory", label: "Inventory" },
     { href: "/admin/collections", label: "Collections" },
+    { href: "/admin/leads", label: "Leads" },
+    { href: "/admin/partners", label: "Partners" },
     { href: "/admin/approvals", label: "Approvals" },
     { href: "/admin/progress", label: "Progress" },
   ],
@@ -68,13 +74,16 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
       >
         <div className="mx-auto max-w-[1280px] px-5 sm:px-8">
           <div className="flex h-16 items-center justify-between gap-4">
-            <Link href={panel === "client" ? "/" : `/${panel}`} className="flex items-center gap-2 shrink-0">
-              <span className="inline-block h-2.5 w-2.5 rounded-[3px] bg-primary" />
-              <span
-                className={`text-[19px] font-semibold tracking-[0.24em] ${
-                  light ? "text-white" : "text-ink"
-                }`}
-              >
+            <Link href={panel === "client" ? "/" : `/${panel}`} className="flex items-center gap-2.5 shrink-0">
+              <Image
+                src={light ? "/images/logo-white-grey.svg" : "/images/logo.svg"}
+                alt="Trimurty"
+                width={30}
+                height={24}
+                priority
+                className="h-7 w-auto"
+              />
+              <span className={`text-[19px] font-semibold tracking-[0.22em] ${light ? "text-white" : "text-ink"}`}>
                 TRIMURTY
               </span>
             </Link>

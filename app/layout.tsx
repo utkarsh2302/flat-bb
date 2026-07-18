@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import Toaster from "@/components/Toaster";
+import ServiceWorker from "@/components/ServiceWorker";
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,6 +27,14 @@ export const metadata: Metadata = {
   title: "Trimurty — Expertly Crafted Premium Living in Jaipur",
   description:
     "Explore Trimurty's premium residences in Jaipur — live availability, honest all-in pricing, photo-verified construction, and reservations in minutes.",
+  applicationName: "Trimurty",
+  manifest: `${BASE}/manifest.webmanifest`,
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Trimurty" },
+  icons: { icon: `${BASE}/icon.svg`, apple: `${BASE}/icon.svg` },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1c1917",
 };
 
 export default function RootLayout({
@@ -38,6 +49,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </AppProvider>
+        <ServiceWorker />
       </body>
     </html>
   );

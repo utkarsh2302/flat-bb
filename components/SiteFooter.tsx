@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { COMPANY, CONTACT, PROJECTS } from "@/lib/data";
 
 export default function SiteFooter() {
@@ -7,9 +8,9 @@ export default function SiteFooter() {
       <div className="mx-auto max-w-[1280px] px-5 py-16 sm:px-8">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div className="max-w-sm">
-            <div className="flex items-center gap-2">
-              <span className="inline-block h-2.5 w-2.5 rounded-[3px] bg-primary" />
-              <span className="text-[19px] font-semibold tracking-[0.24em] text-white">TRIMURTY</span>
+            <div className="flex items-center gap-2.5">
+              <Image src="/images/logo-white-grey.svg" alt="Trimurty" width={30} height={24} className="h-7 w-auto" />
+              <span className="text-[19px] font-semibold tracking-[0.22em] text-white">TRIMURTY</span>
             </div>
             <p className="mt-4 text-[16px] leading-relaxed text-mute">
               {COMPANY.tagline}. Crafting landmark homes across {COMPANY.city} since {COMPANY.since}.

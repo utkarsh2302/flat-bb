@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { inr, inrShort, inDateFriendly } from "@/lib/format";
+import { CURRENT_ASSOCIATE } from "@/lib/data";
 import ShareButton from "@/components/ShareButton";
 import { useApp } from "@/lib/store";
 
@@ -16,15 +17,14 @@ export default function BookingFlow({
   subtitle,
   allInPrice,
   eoiAmount,
-  associateId,
 }: {
   unitId: string;
   title: string;
   subtitle: string;
   allInPrice: number;
   eoiAmount: number;
-  associateId?: string;
 }) {
+  const [associateId, setAssociateId] = useState<string | undefined>(undefined);
   const [step, setStep] = useState<Step>(0);
   const [left, setLeft] = useState(HOLD_SECONDS);
   const [name, setName] = useState("");
@@ -37,9 +37,12 @@ export default function BookingFlow({
   const { hold, book } = useApp();
 
   // Starting a reservation places a live 15-min hold on the unit — visible in
-  // the elevation and the builder cockpit immediately.
+  // the elevation and the builder cockpit immediately. Also detect broker mode.
   useEffect(() => {
     hold(unitId);
+    const p = new URLSearchParams(window.location.search);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (p.get("broker") === "1") setAssociateId(CURRENT_ASSOCIATE);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unitId]);
 
@@ -116,6 +119,11 @@ export default function BookingFlow({
 
   return (
     <div className="mt-4">
+      {associateId && (
+        <p className="mb-4 rounded-md bg-canvas-soft px-4 py-3 text-[14px] text-body">
+          Reserving on behalf of your client — enter <span className="font-semibold text-ink">their</span> details.
+        </p>
+      )}
       {/* Summary + hold timer */}
       <div className="rounded-md bg-canvas-soft p-5">
         <div className="flex items-start justify-between">

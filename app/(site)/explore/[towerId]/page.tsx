@@ -1,19 +1,13 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getTower, floorsOfTower, PROJECT } from "@/lib/data";
+import { getTower, floorsOfTower, unitsOfFloor, PROJECT } from "@/lib/data";
 import { unitAllIn } from "@/lib/pricing";
 import Elevation, { type ElevFloor } from "@/components/Elevation";
-import { BackLink } from "@/components/ui";
+import Tower3D, { type Tower3DFloor } from "@/components/Tower3D";
+import { BackLink, Eyebrow, AvailabilityLegend } from "@/components/ui";
 
 export async function generateStaticParams() {
   return [{ towerId: "T1" }, { towerId: "T2" }, { towerId: "T3" }];
 }
-
-const TOWER_IMAGE: Record<string, string> = {
-  T1: "/images/divinity.jpg",
-  T2: "/images/kachnar.webp",
-  T3: "/images/valeria.webp",
-};
 
 export default async function TowerPage({
   params,
@@ -39,37 +33,37 @@ export default async function TowerPage({
     })),
   }));
 
-  return (
-    <div>
-      {/* Project banner */}
-      <section className="relative h-52 overflow-hidden sm:h-64">
-        <Image
-          src={TOWER_IMAGE[tower.id] ?? "/images/divinity.jpg"}
-          alt={`${tower.name} tower, ${PROJECT.name}`}
-          fill
-          priority
-          sizes="100vw"
-          className="img-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/45 to-ink/30" />
-        <div className="absolute inset-0 flex items-end">
-          <div className="mx-auto w-full max-w-[1280px] px-5 pb-6 sm:px-8">
-            <p className="t-eyebrow text-white/80">{PROJECT.name}</p>
-            <h1 className="t-serif-xl mt-2 text-white">
-              {tower.name}{" "}
-              <span className="align-middle text-[0.5em] text-white/60">{tower.id}</span>
-            </h1>
-            <p className="mt-1 text-[15px] text-white/80">
-              {tower.floors} floors{tower.premiumView ? ` · ${tower.premiumView}` : ""}
-            </p>
-          </div>
-        </div>
-      </section>
+  // Ascending floors (unit ids only) for the 3D tower — live status is resolved
+  // from the store inside the component.
+  const floors3d: Tower3DFloor[] = [];
+  for (let f = 1; f <= tower.floors; f++) {
+    floors3d.push({ floor: f, unitIds: unitsOfFloor(towerId, f).map((u) => u.id) });
+  }
 
-      <div className="mx-auto max-w-[1280px] px-5 py-6 sm:px-8">
-        <BackLink href="/explore">All towers</BackLink>
-        <Elevation towerId={tower.id} floors={floors} />
+  return (
+    <div className="mx-auto max-w-[1280px] px-5 pt-6 pb-10 sm:px-8">
+      <BackLink href="/explore">All towers</BackLink>
+
+      <div className="mt-3 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <Eyebrow>{PROJECT.name}</Eyebrow>
+          <h1 className="t-serif-xl mt-2">
+            {tower.name} <span className="align-middle text-[0.5em] text-body-mid">{tower.id}</span>
+          </h1>
+          <p className="mt-1 text-[15px] text-body">
+            {tower.floors} floors{tower.premiumView ? ` · ${tower.premiumView}` : ""}
+          </p>
+        </div>
+        <div className="hidden sm:block">
+          <AvailabilityLegend />
+        </div>
       </div>
+
+      <div className="mt-5">
+        <Tower3D towerId={tower.id} towerName={tower.name} floors={floors3d} />
+      </div>
+
+      <Elevation towerId={tower.id} floors={floors} />
     </div>
   );
 }

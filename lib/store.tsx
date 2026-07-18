@@ -26,6 +26,7 @@ import {
   DEMO_LEDGER,
   DEMO_SNAGS,
   COLLECTION_ROWS,
+  ASSOCIATES,
   getUnit,
   type UnitStatus,
   type LedgerEntry,
@@ -39,7 +40,7 @@ import {
 } from "./data";
 import { unitAllIn } from "./pricing";
 
-const PERSIST_KEY = "trimurty.app.v2";
+const PERSIST_KEY = "trimurty.app.v3";
 const HOLD_MS = 15 * 60 * 1000;
 const EOI = 51000;
 
@@ -93,6 +94,7 @@ export interface AppState {
   activity: ActivityEvent[];
   shortlist: string[]; // unit ids the buyer saved
   visits: SiteVisit[];
+  partnerActive: Record<string, boolean>; // associate id -> active
 }
 
 // ── seed ──────────────────────────────────────────────────────────────────
@@ -141,6 +143,7 @@ function seed(): AppState {
     ],
     shortlist: [],
     visits: [],
+    partnerActive: Object.fromEntries(ASSOCIATES.map((a) => [a.id, true])),
   };
 }
 
@@ -159,6 +162,8 @@ type Action =
   | { type: "DECIDE_APPROVAL"; id: string; decision: "approved" | "rejected" }
   | { type: "TOGGLE_SHORTLIST"; unitId: string }
   | { type: "BOOK_VISIT"; visit: SiteVisit }
+  | { type: "CANCEL_BOOKING"; bookingId: string }
+  | { type: "TOGGLE_PARTNER"; id: string }
   | { type: "RESET" };
 
 const SNAG_FLOW: SnagStatus[] = ["reported", "fixing", "fixed", "verified"];
@@ -354,6 +359,27 @@ function reducer(state: AppState, action: Action): AppState {
         activity: [ev("visit", `Site visit booked: ${action.visit.name}${action.visit.unitId ? ` · ${action.visit.unitId}` : ""} (${action.visit.slot})`), ...state.activity].slice(0, 40),
       };
 
+    case "CANCEL_BOOKING": {
+      const b = state.bookings.find((x) => x.id === action.bookingId);
+      if (!b) return state;
+      const ledgers = { ...state.ledgers };
+      delete ledgers[action.bookingId];
+      return {
+        ...state,
+        unitStatus: { ...state.unitStatus, [b.unitId]: "available" },
+        bookings: state.bookings.filter((x) => x.id !== action.bookingId),
+        ledgers,
+        commissions: state.commissions.filter((c) => c.unitId !== b.unitId),
+        activity: [ev("booking", `Booking cancelled: ${b.unitId} (${b.buyerName}) — unit released`), ...state.activity].slice(0, 40),
+      };
+    }
+
+    case "TOGGLE_PARTNER":
+      return {
+        ...state,
+        partnerActive: { ...state.partnerActive, [action.id]: !(state.partnerActive[action.id] ?? true) },
+      };
+
     case "RESET":
       return seed();
 
@@ -377,6 +403,8 @@ interface Ctx {
   decideApproval: (id: string, decision: "approved" | "rejected") => void;
   toggleShortlist: (unitId: string) => void;
   bookVisit: (visit: SiteVisit) => void;
+  cancelBooking: (bookingId: string) => void;
+  togglePartner: (id: string) => void;
   reset: () => void;
 }
 
@@ -427,6 +455,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       decideApproval: (id, decision) => dispatch({ type: "DECIDE_APPROVAL", id, decision }),
       toggleShortlist: (unitId) => dispatch({ type: "TOGGLE_SHORTLIST", unitId }),
       bookVisit: (visit) => dispatch({ type: "BOOK_VISIT", visit }),
+      cancelBooking: (bookingId) => dispatch({ type: "CANCEL_BOOKING", bookingId }),
+      togglePartner: (id) => dispatch({ type: "TOGGLE_PARTNER", id }),
       reset: () => dispatch({ type: "RESET" }),
     }),
     [s, ready],

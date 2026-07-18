@@ -33,8 +33,10 @@ function validTill(taggedOn: string, days: number): string {
   return inDate(new Date(new Date(taggedOn).getTime() + days * 864e5));
 }
 
+const STAGES: LeadStatus[] = ["new", "visit_booked", "eoi", "booked", "lost"];
+
 export default function BrokerLeads() {
-  const { s, addLead } = useApp();
+  const { s, addLead, setLead } = useApp();
   const leads = s.leads.filter((l) => l.associateId === CURRENT_ASSOCIATE);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -92,9 +94,15 @@ export default function BrokerLeads() {
                 <td className="px-4 py-3 text-body tabular">{l.phone}</td>
                 <td className="px-4 py-3 text-body">{l.interest}</td>
                 <td className="px-4 py-3">
-                  <span className={`rounded-full px-3 py-1 text-[12px] font-semibold ${chipClass(l.status)}`}>
-                    {STATUS_LABEL[l.status]}
-                  </span>
+                  <select
+                    value={l.status}
+                    onChange={(e) => setLead(l.id, e.target.value as LeadStatus)}
+                    className={`rounded-full border-0 px-3 py-1 text-[12px] font-semibold ${chipClass(l.status)}`}
+                  >
+                    {STAGES.map((st) => (
+                      <option key={st} value={st}>{STATUS_LABEL[st]}</option>
+                    ))}
+                  </select>
                 </td>
                 <td className="px-4 py-3 text-body tabular">{validTill(l.taggedOn, l.validityDays)}</td>
               </tr>

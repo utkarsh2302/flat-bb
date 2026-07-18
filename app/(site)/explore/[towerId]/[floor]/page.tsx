@@ -1,8 +1,14 @@
 import { notFound } from "next/navigation";
-import { getTower, unitsOfFloor } from "@/lib/data";
+import { getTower, unitsOfFloor, TOWERS } from "@/lib/data";
 import { unitAllIn } from "@/lib/pricing";
 import { BackLink, AvailabilityLegend } from "@/components/ui";
 import FloorUnits, { type FloorUnit } from "@/components/FloorUnits";
+
+export function generateStaticParams() {
+  const out: { towerId: string; floor: string }[] = [];
+  for (const t of TOWERS) for (let f = 1; f <= t.floors; f++) out.push({ towerId: t.id, floor: String(f) });
+  return out;
+}
 
 export default async function FloorPage({
   params,
