@@ -9,6 +9,7 @@ import SunPath from "@/components/SunPath";
 import UnitBookingCard from "@/components/UnitBookingCard";
 import UnitStickyBar from "@/components/UnitStickyBar";
 import Neighbourhood from "@/components/Neighbourhood";
+import UnitGallery from "@/components/UnitGallery";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PossessionCountdown from "@/components/PossessionCountdown";
 import { RecordView } from "@/components/RecentlyViewed";
@@ -63,7 +64,7 @@ export default async function UnitPage({
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_1fr]">
         {/* Left: plan, sun-path */}
         <div className="space-y-6">
-          <FloorPlan bhk={unit.bhk} />
+          <UnitGallery bhk={unit.bhk} />
           <SunPath facing={unit.facing} />
           <Neighbourhood />
         </div>
@@ -129,33 +130,3 @@ function AreaRow({ k, v, strong }: { k: string; v: string; strong?: boolean }) {
   );
 }
 
-function FloorPlan({ bhk }: { bhk: number }) {
-  return (
-    <div className="rounded-md bg-canvas-soft p-6">
-      <p className="text-[13px] uppercase tracking-wide text-body-mid">Floor plan · {bhk} BHK</p>
-      <svg viewBox="0 0 420 260" className="mt-3 w-full" role="img" aria-label={`${bhk} BHK floor plan`}>
-        <g stroke="var(--color-ink)" strokeWidth="2.5" fill="none" strokeOpacity="0.5">
-          <rect x="20" y="20" width="380" height="220" rx="4" />
-          {/* living */}
-          <rect x="20" y="20" width="200" height="130" fill="var(--color-mute)" fillOpacity="0.15" />
-          {/* bedrooms */}
-          <rect x="220" y="20" width="180" height="90" fill="var(--color-canvas)" />
-          <line x1="310" y1="20" x2="310" y2="110" />
-          {/* kitchen + bath */}
-          <rect x="20" y="150" width="120" height="90" fill="var(--color-canvas)" />
-          <rect x="140" y="150" width="80" height="90" fill="var(--color-canvas)" />
-          <rect x="220" y="110" width="180" height="130" fill="var(--color-mute)" fillOpacity="0.1" />
-        </g>
-        <g fontSize="11" fill="var(--color-body)" fontWeight="600">
-          <text x="60" y="90">Living / Dining</text>
-          <text x="235" y="65">Bed 1</text>
-          <text x="325" y="65">Bed 2</text>
-          <text x="45" y="200">Kitchen</text>
-          <text x="150" y="200">Bath</text>
-          <text x="270" y="180">{bhk >= 3 ? "Bed 3 / Balcony" : "Balcony"}</text>
-        </g>
-      </svg>
-      <p className="mt-2 text-[13px] text-body-mid">Indicative layout — not to scale.</p>
-    </div>
-  );
-}

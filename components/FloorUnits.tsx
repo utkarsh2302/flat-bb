@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import type { Facing, UnitStatus } from "@/lib/data";
+import { planFor } from "@/lib/data";
 import { inrShort, sqft } from "@/lib/format";
 import { FACING_LABEL } from "@/components/Compass";
 import { STATUS_LABEL, statusChipClass } from "@/lib/status";
@@ -54,7 +56,7 @@ export default function FloorUnits({ units }: { units: FloorUnit[] }) {
                 </span>
               </div>
 
-              <FloorPlanMini />
+              <FloorPlanMini bhk={u.bhk} />
 
               <dl className="mt-3 space-y-1 text-[14px]">
                 <Row k="Super area" v={sqft(u.superSqft)} />
@@ -91,15 +93,16 @@ function Row({ k, v }: { k: string; v: string }) {
   );
 }
 
-function FloorPlanMini() {
+function FloorPlanMini({ bhk }: { bhk: 2 | 3 | 4 }) {
   return (
-    <svg viewBox="0 0 200 110" className="mt-4 w-full rounded-sm bg-canvas-soft" role="img" aria-label="Schematic floor plan">
-      <g stroke="var(--color-ink)" strokeOpacity="0.35" strokeWidth="2" fill="none">
-        <rect x="12" y="12" width="176" height="86" rx="3" />
-        <line x1="100" y1="12" x2="100" y2="98" />
-        <line x1="100" y1="55" x2="188" y2="55" />
-        <rect x="24" y="24" width="60" height="62" fill="var(--color-mute)" fillOpacity="0.25" />
-      </g>
-    </svg>
+    <div className="relative mt-4 aspect-[16/9] w-full overflow-hidden rounded-sm bg-white ring-1 ring-ink/5">
+      <Image
+        src={planFor(bhk)}
+        alt={`${bhk} BHK floor plan`}
+        fill
+        sizes="(max-width:640px) 90vw, 260px"
+        className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.05]"
+      />
+    </div>
   );
 }

@@ -61,8 +61,9 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Light (white text over the hero photo) only on the home hero, un-scrolled.
-  const light = isHome && !scrolled && !open;
+  // The home hero is now a bright render — header sits over it with a soft light
+  // veil and dark text (no more white-on-dark treatment).
+  const overHero = isHome && !scrolled && !open;
   const isActive = (href: string) =>
     href === "/" || href === "/broker" || href === "/admin"
       ? pathname === href
@@ -72,21 +73,21 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
     <>
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-          light ? "bg-transparent" : "glass border-b border-line"
+          overHero ? "bg-gradient-to-b from-canvas/85 via-canvas/45 to-transparent" : "glass border-b border-line"
         }`}
       >
         <div className="mx-auto max-w-[1280px] px-5 sm:px-8">
           <div className="flex h-16 items-center justify-between gap-4">
             <Link href={panel === "client" ? "/" : `/${panel}`} className="flex items-center gap-2.5 shrink-0">
               <Image
-                src={light ? "/images/logo-white-grey.svg" : "/images/logo.svg"}
+                src="/images/logo.svg"
                 alt="Trimurty"
                 width={30}
                 height={24}
                 priority
                 className="h-7 w-auto"
               />
-              <span className={`text-[19px] font-semibold tracking-[0.22em] ${light ? "text-white" : "text-ink"}`}>
+              <span className="text-[19px] font-semibold tracking-[0.22em] text-ink">
                 TRIMURTY
               </span>
             </Link>
@@ -97,13 +98,7 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
                   key={item.href}
                   href={item.href}
                   className={`rounded-sm px-3 py-2 text-[15px] transition-colors ${
-                    isActive(item.href)
-                      ? light
-                        ? "text-white font-semibold"
-                        : "text-ink font-semibold"
-                      : light
-                        ? "text-white/75 hover:text-white"
-                        : "text-body hover:text-ink"
+                    isActive(item.href) ? "text-ink font-semibold" : "text-body hover:text-ink"
                   }`}
                 >
                   {item.label}
@@ -116,7 +111,7 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
                 <Link
                   href="/shortlist"
                   aria-label={`Saved (${savedCount})`}
-                  className={`press relative rounded-full p-2 transition-colors ${light ? "text-white hover:bg-white/10" : "text-ink hover:bg-canvas-soft"}`}
+                  className="press relative rounded-full p-2 text-ink transition-colors hover:bg-canvas-soft"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill={savedCount > 0 ? "currentColor" : "none"} aria-hidden>
                     <path d="M12 21s-7.5-4.6-10-9.2C.6 8.9 2 5.5 5.2 5.5c2 0 3.2 1.2 3.9 2.2.6.9.9 1.3.9 1.3s.3-.4.9-1.3c.7-1 1.9-2.2 3.9-2.2 3.2 0 4.6 3.4 3.2 6.3C19.5 16.4 12 21 12 21Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
@@ -128,8 +123,8 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
                   )}
                 </Link>
               )}
-              <NotificationsBell light={light} />
-              <PanelSwitcher current={panel} light={light} />
+              <NotificationsBell light={false} />
+              <PanelSwitcher current={panel} light={false} />
               {panel === "client" && (
                 <Link href="/explore" className="hidden sm:inline-flex btn btn-primary !px-4 !py-2 !text-[15px]">
                   Explore homes
@@ -140,7 +135,7 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
                 aria-label="Menu"
                 aria-expanded={open}
                 onClick={() => setOpen((v) => !v)}
-                className={`press md:hidden rounded-sm border p-2 ${light ? "border-white/40 text-white" : "border-line text-ink"}`}
+                className="press md:hidden rounded-sm border border-line p-2 text-ink"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden>
                   <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />

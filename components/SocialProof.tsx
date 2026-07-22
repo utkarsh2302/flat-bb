@@ -14,7 +14,7 @@ export default function SocialProof() {
   const { available, pctSold } = liveAvailability(s);
 
   return (
-    <span className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3.5 py-1.5 text-[13px] font-medium text-white backdrop-blur">
+    <span className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/80 px-3.5 py-1.5 text-[13px] font-medium text-ink shadow-sm backdrop-blur">
       <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
       {week > 0 ? <>🔥 {week} booked this week · </> : null}
       {available} homes left · {pctSold}% sold

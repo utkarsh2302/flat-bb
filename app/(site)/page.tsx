@@ -5,7 +5,6 @@ import {
   CONTACT,
   PROJECTS,
   PROJECT,
-  HERO_IMAGES,
   UNITS,
   availability,
   type PortfolioProject,
@@ -18,52 +17,42 @@ export default function HomePage() {
   return (
     <div>
       {/* ───────────────── Hero ───────────────── */}
-      <section className="relative flex min-h-[92svh] items-end overflow-hidden">
+      <section className="relative flex min-h-[92svh] items-center overflow-hidden bg-[#e9f0f5]">
         <Image
-          src={HERO_IMAGES[0]}
-          alt="Trimurty premium residences in Jaipur"
+          src="/images/hero-trimurty.webp"
+          alt="Trimurty residences rising in Jaipur"
           fill
           priority
           sizes="100vw"
           className="img-cover a-kenburns"
-          style={{ objectPosition: "18% center" }}
+          style={{ objectPosition: "74% center" }}
         />
-        {/* Cinematic scrim — the right hard-scrim hides the banner's baked-in
-            marketing text/tags; the building emerges on the left under the headline. */}
-        <div className="absolute inset-0 bg-ink/40" />
+        {/* Airy light washes — the real render keeps its bright sky; a soft white
+            gradient on the left guarantees the dark headline stays legible. */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to right, transparent 0%, transparent 26%, rgba(20,14,12,0.9) 50%, rgb(20,14,12) 72%)",
+              "linear-gradient(to right, rgba(252,252,251,0.97) 0%, rgba(252,252,251,0.9) 30%, rgba(252,252,251,0.5) 52%, rgba(252,252,251,0.08) 70%, transparent 82%)",
           }}
         />
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 md:hidden"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(20,14,12,0.82) 0%, rgba(20,14,12,0.3) 26%, transparent 46%)",
+              "linear-gradient(to bottom, rgba(252,252,251,0.92) 0%, rgba(252,252,251,0.55) 38%, transparent 68%)",
           }}
         />
-        {/* Surgical spot to erase the banner's rooftop "under construction" tag */}
-        <div
-          className="absolute inset-0 hidden md:block"
-          style={{
-            background:
-              "radial-gradient(28% 22% at 45% 20%, rgb(20,14,12) 0%, rgba(20,14,12,0.75) 45%, transparent 78%)",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent" />
 
-        <div className="relative mx-auto w-full max-w-[1280px] px-5 pb-16 pt-32 sm:px-8 sm:pb-24">
-          <p className="a-fadeup t-eyebrow text-white/80">
+        <div className="relative mx-auto w-full max-w-[1280px] px-5 py-24 sm:px-8">
+          <p className="a-fadeup t-eyebrow text-primary">
             {COMPANY.name} · {COMPANY.city} · Since {COMPANY.since}
           </p>
-          <h1 className="a-fadeup d1 t-hero mt-5 max-w-4xl text-white">
+          <h1 className="a-fadeup d1 t-hero mt-5 max-w-3xl text-ink">
             Expertly crafted living,{" "}
-            <span className="t-serif-italic text-white/95">at the heart of Jaipur.</span>
+            <span className="t-serif-italic text-primary">at the heart of Jaipur.</span>
           </h1>
-          <p className="a-fadeup d2 t-body-lg mt-6 max-w-xl text-white/85">
+          <p className="a-fadeup d2 t-body-lg mt-6 max-w-xl text-body">
             Explore premium residences with live availability, an honest all-in
             price, and a home you can watch rise — reserve in minutes.
           </p>
@@ -71,7 +60,7 @@ export default function HomePage() {
             <Link href="/explore" className="btn btn-primary btn-lg">
               Explore homes
             </Link>
-            <a href="#projects" className="btn btn-ghost-light btn-lg">
+            <a href="#projects" className="btn btn-tertiary btn-lg">
               View our projects
             </a>
           </div>
@@ -88,7 +77,7 @@ export default function HomePage() {
         </div>
 
         <div className="a-fadein absolute inset-x-0 bottom-6 flex justify-center">
-          <svg className="a-scrollcue text-white/70" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg className="a-scrollcue text-ink/40" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
@@ -211,9 +200,9 @@ export default function HomePage() {
 
 function HeroStat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="border-l border-white/25 pl-4">
-      <p className="text-[18px] font-semibold text-white tabular">{value}</p>
-      <p className="text-[13px] text-white/70">{label}</p>
+    <div className="border-l border-ink/15 pl-4">
+      <p className="text-[18px] font-semibold text-ink tabular">{value}</p>
+      <p className="text-[13px] text-body-mid">{label}</p>
     </div>
   );
 }

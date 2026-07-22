@@ -197,6 +197,24 @@ export const HERO_IMAGES = [
   "/images/kachnar-banner-1920.webp",
 ];
 
+// Real architect floor plans (Trimurty CAD drawings, /public/images/plans).
+// Representative unit plans by configuration — labelled as such on the page.
+export function planFor(bhk: number): string {
+  if (bhk >= 4) return "/images/plans/unit-4bhk.webp";
+  if (bhk === 3) return "/images/plans/unit-3bhk.webp";
+  return "/images/plans/unit-2bhk.webp";
+}
+
+// Real interior/exterior renders (Trimurty, /public/images/rooms) for the unit gallery.
+export const UNIT_GALLERY: { src: string; label: string }[] = [
+  { src: "/images/rooms/drawing-dining.webp", label: "Living & dining" },
+  { src: "/images/rooms/bedroom.webp", label: "Master bedroom" },
+  { src: "/images/rooms/kitchen.webp", label: "Modular kitchen" },
+  { src: "/images/rooms/bathroom.webp", label: "Bathroom" },
+  { src: "/images/rooms/balcony.webp", label: "Balcony" },
+  { src: "/images/rooms/facade.webp", label: "Building facade" },
+];
+
 export const PROJECT: Project = {
   id: "the-greater-jagatpura",
   builder: "Trimurty",
