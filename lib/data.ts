@@ -205,6 +205,9 @@ export function planFor(bhk: number): string {
   return "/images/plans/unit-2bhk.webp";
 }
 
+// Real geo-location of the flagship (Shivdaspura, Tonk Road, Jaipur) for the map.
+export const PROJECT_GEO = { lat: 26.7061, lon: 75.876, label: "The Greater Jagatpura · Tonk Road, Jaipur" };
+
 // Real interior/exterior renders (Trimurty, /public/images/rooms) for the unit gallery.
 export const UNIT_GALLERY: { src: string; label: string }[] = [
   { src: "/images/rooms/drawing-dining.webp", label: "Living & dining" },

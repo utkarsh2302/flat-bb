@@ -1,24 +1,32 @@
-import { NEIGHBOURHOOD } from "@/lib/data";
+import { NEIGHBOURHOOD, PROJECT_GEO } from "@/lib/data";
 
 /** Trulia-style "what's around" — connectivity buyers actually care about. */
 export default function Neighbourhood() {
+  const { lat, lon } = PROJECT_GEO;
+  const bbox = [lon - 0.03, lat - 0.02, lon + 0.03, lat + 0.02].map((n) => n.toFixed(5)).join("%2C");
+  const embed = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lon}`;
+  const full = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`;
+
   return (
     <div className="card p-6">
       <p className="text-[13px] uppercase tracking-wide text-body-mid">The neighbourhood</p>
       <p className="mt-1 text-[18px] font-semibold text-ink">Connected to everything that matters</p>
 
-      {/* Stylised connectivity map */}
-      <div className="relative mt-4 h-36 overflow-hidden rounded-md bg-canvas-soft">
-        <svg viewBox="0 0 400 150" className="h-full w-full" aria-hidden>
-          <path d="M0 110 Q120 90 200 100 T400 80" fill="none" stroke="var(--color-mute)" strokeWidth="6" />
-          <path d="M60 0 L120 150" stroke="var(--color-mute)" strokeWidth="4" opacity="0.6" />
-          <path d="M260 0 L300 150" stroke="var(--color-mute)" strokeWidth="4" opacity="0.6" />
-          <circle cx="200" cy="98" r="9" fill="var(--color-primary)" />
-          <circle cx="200" cy="98" r="16" fill="none" stroke="var(--color-primary)" strokeWidth="2" opacity="0.4" />
-        </svg>
-        <span className="absolute left-1/2 top-[58%] -translate-x-1/2 translate-y-2 rounded-full bg-canvas px-2.5 py-0.5 text-[12px] font-semibold text-ink shadow-[var(--shadow-soft)]">
-          You are here
-        </span>
+      {/* Real interactive map of the actual location */}
+      <div className="relative mt-4 h-56 overflow-hidden rounded-md border border-line bg-canvas-soft">
+        <iframe
+          title={`Map of ${PROJECT_GEO.label}`}
+          src={embed}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="h-full w-full"
+        />
+      </div>
+      <div className="mt-2 flex items-center justify-between text-[12px] text-body-mid">
+        <span>📍 {PROJECT_GEO.label}</span>
+        <a href={full} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
+          Open in maps →
+        </a>
       </div>
 
       <ul className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">
