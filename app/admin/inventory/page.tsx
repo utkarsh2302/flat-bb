@@ -5,6 +5,7 @@ import { FLOOR_RISE_PER_SQFT } from "@/lib/pricing";
 import { inr } from "@/lib/format";
 import { Eyebrow, AvailabilityLegend } from "@/components/ui";
 import { useApp, liveAvailability, towerUnitIds } from "@/lib/store";
+import UnitGridEditor from "@/components/UnitGridEditor";
 
 export default function AdminInventory() {
   const { s } = useApp();
@@ -52,6 +53,13 @@ export default function AdminInventory() {
             })}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-8">
+        <h2 className="t-display-sub-sm">Manage units</h2>
+        <div className="mt-3 rounded-lg border border-line p-5">
+          <UnitGridEditor />
+        </div>
       </div>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-2">

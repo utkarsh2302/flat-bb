@@ -31,6 +31,7 @@ const NAV: Record<Panel, { href: string; label: string }[]> = {
     { href: "/admin/inventory", label: "Inventory" },
     { href: "/admin/collections", label: "Collections" },
     { href: "/admin/demands", label: "Demands" },
+    { href: "/admin/analytics", label: "Analytics" },
     { href: "/admin/leads", label: "Leads" },
     { href: "/admin/partners", label: "Partners" },
     { href: "/admin/approvals", label: "Approvals" },
@@ -90,7 +91,7 @@ export default function SiteHeader({ panel }: { panel: Panel }) {
               </span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="no-scrollbar mx-2 hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto md:flex">
               {NAV[panel].map((item) => (
                 <Link
                   key={item.href}

@@ -103,6 +103,14 @@ export function unitAllIn(unit: Unit): number {
   return computeCostSheet(unit).grandTotal;
 }
 
+/** Reverse EMI — the max home price a monthly budget affords (given down %). */
+export function maxAffordablePrice(monthly: number, annualRatePct: number, years: number, downPct: number): number {
+  const r = annualRatePct / 100 / 12;
+  const n = years * 12;
+  const maxLoan = r === 0 ? monthly * n : (monthly * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n));
+  return Math.round(maxLoan / (1 - downPct / 100));
+}
+
 /** Standard reducing-balance EMI. principal ₹, annual rate %, tenure years. */
 export function emi(principal: number, annualRatePct: number, years: number): number {
   const n = years * 12;

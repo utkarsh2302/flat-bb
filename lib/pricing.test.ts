@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { computeCostSheet, emi, unitAllIn, FLOOR_RISE_PER_SQFT } from "./pricing";
+import { computeCostSheet, emi, unitAllIn, maxAffordablePrice, FLOOR_RISE_PER_SQFT } from "./pricing";
 import { UNITS, getUnit, getTower, PROJECT } from "./data";
 
 test("grand total is exactly the sum of every displayed line (no drift)", () => {
@@ -59,6 +59,12 @@ test("TDS note appears only above the 194-IA threshold", () => {
 test("unitAllIn equals cost sheet grand total", () => {
   const u = getUnit("T3-9A")!;
   assert.equal(unitAllIn(u), computeCostSheet(u).grandTotal);
+});
+
+test("maxAffordablePrice grows with budget; zero-rate is linear", () => {
+  assert.ok(maxAffordablePrice(100000, 8.5, 20, 20) > maxAffordablePrice(50000, 8.5, 20, 20));
+  // zero interest: loan = monthly*n, price = loan / (1 - down)
+  assert.equal(maxAffordablePrice(10000, 0, 10, 20), Math.round((10000 * 120) / 0.8));
 });
 
 test("EMI matches the reducing-balance formula", () => {

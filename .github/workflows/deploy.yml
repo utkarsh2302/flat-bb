@@ -24,6 +24,8 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Unit tests (gate)
+        run: npm test
       - name: Build static export
         run: PAGES=true npm run build
       - uses: actions/configure-pages@v5

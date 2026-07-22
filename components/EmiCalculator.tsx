@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { emi } from "@/lib/pricing";
+import { emi, maxAffordablePrice } from "@/lib/pricing";
 import { inr, inrShort } from "@/lib/format";
 
 export default function EmiCalculator({ initialPrice }: { initialPrice: number }) {
@@ -18,10 +18,8 @@ export default function EmiCalculator({ initialPrice }: { initialPrice: number }
   const totalInterest = totalPaid - loan;
 
   // Reverse EMI — what a monthly budget can afford
-  const r = rate / 100 / 12;
-  const n = years * 12;
-  const maxLoan = r === 0 ? budget * n : Math.round((budget * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n)));
-  const maxPrice = Math.round(maxLoan / (1 - downPct / 100));
+  const maxPrice = maxAffordablePrice(budget, rate, years, downPct);
+  const maxLoan = Math.round(maxPrice * (1 - downPct / 100));
 
   return (
     <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">

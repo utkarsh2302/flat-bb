@@ -180,6 +180,7 @@ type Action =
   | { type: "RAISE_DEMAND"; bookingId: string; milestoneId: string }
   | { type: "RAISE_DEMAND_ALL"; milestoneId: string }
   | { type: "SEND_REMINDER"; rows: { bookingId: string; demandId: string; to: string }[]; channel: ReminderChannel }
+  | { type: "SET_UNIT_STATUS"; unitIds: string[]; status: UnitStatus }
   | { type: "RESET" };
 
 const SNAG_FLOW: SnagStatus[] = ["reported", "fixing", "fixed", "verified"];
@@ -476,6 +477,22 @@ function reducer(state: AppState, action: Action): AppState {
       };
     }
 
+    case "SET_UNIT_STATUS": {
+      if (action.unitIds.length === 0) return state;
+      const unitStatus = { ...state.unitStatus };
+      const holds = { ...state.holds };
+      for (const id of action.unitIds) {
+        unitStatus[id] = action.status;
+        if (action.status === "available") delete holds[id];
+      }
+      return {
+        ...state,
+        unitStatus,
+        holds,
+        activity: [ev("hold", `${action.unitIds.length} unit(s) set to ${action.status} by admin`), ...state.activity].slice(0, 40),
+      };
+    }
+
     case "RESET":
       return seed();
 
@@ -504,6 +521,7 @@ interface Ctx {
   raiseDemand: (bookingId: string, milestoneId: string) => void;
   raiseDemandAll: (milestoneId: string) => void;
   sendReminder: (rows: { bookingId: string; demandId: string; to: string }[], channel: ReminderChannel) => void;
+  setUnitStatus: (unitIds: string[], status: UnitStatus) => void;
   reset: () => void;
 }
 
@@ -559,6 +577,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       raiseDemand: (bookingId, milestoneId) => dispatch({ type: "RAISE_DEMAND", bookingId, milestoneId }),
       raiseDemandAll: (milestoneId) => dispatch({ type: "RAISE_DEMAND_ALL", milestoneId }),
       sendReminder: (rows, channel) => dispatch({ type: "SEND_REMINDER", rows, channel }),
+      setUnitStatus: (unitIds, status) => dispatch({ type: "SET_UNIT_STATUS", unitIds, status }),
       reset: () => dispatch({ type: "RESET" }),
     }),
     [s, ready],
