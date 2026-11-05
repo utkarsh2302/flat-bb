@@ -1,4 +1,5 @@
 <title>Tayal Envogue 2.0 Booking</title>
+<meta name="robots" content="noindex, nofollow">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -720,7 +721,7 @@ img { display: block; max-width: 100%; }
   function screenVerify() {
     if (!S.otpSent) return `
       <div style="display:grid;gap:6px"><p class="tracked">Step 1 of 2 · Verify</p><h1 class="e-l">Your mobile number</h1><p class="lead">We'll send a one-time code. Your KYC and bank details are fetched after this, so there's nothing to type.</p></div>
-      <div class="fld"><label for="phone">Mobile number</label><input class="in tab" id="phone" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile" maxlength="11" value="${esc(S.phone)}"><span class="err" id="phone-err"></span></div>
+      <div class="fld"><label for="mobile">Mobile number</label><input class="in tab" id="mobile" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile" maxlength="16" value="${esc(S.phone)}"><span class="err" id="mobile-err"></span></div>
       <p class="cap" style="display:flex;gap:6px;align-items:center">${icon.lock} Used only for this booking. Never shared with brokers.</p>`;
     if (!S.verified) return `
       <div style="display:grid;gap:6px"><p class="tracked">Step 1 of 2 · Verify</p><h1 class="e-l">Enter the 6-digit code</h1><p class="lead">Sent by SMS to +91 ${esc(S.phone)}.</p></div>
@@ -844,7 +845,7 @@ img { display: block; max-width: 100%; }
     if (d.bank) { S.bank = d.bank; log(`Loan call-back requested · ${d.bank}`); render(); return; }
     if (d.slot) { S.slot = d.slot; log(`Agreement signing booked · ${d.slot}`); render(); return; }
     if (d.decide) { const r = $("reason"); if (r) S.reason = r.value; decide(d.decide); go(d.decide); return; }
-    if (d.act === "send-otp") { const v = ($("phone")?.value || "").replace(/\D/g, ""); if (!/^[6-9]\d{9}$/.test(v)) { $("phone-err").textContent = "Enter a 10-digit Indian mobile number."; return; } S.phone = v.slice(0, 5) + " " + v.slice(5); S.otpSent = true; log(`OTP sent to +91 ${S.phone}`); render(); setTimeout(() => $("otp")?.focus(), 50); return; }
+    if (d.act === "send-otp") { let v = ($("mobile")?.value || "").replace(/\D/g, ""); if (v.length === 12 && v.startsWith("91")) v = v.slice(2); if (v.length === 11 && v.startsWith("0")) v = v.slice(1); if (!/^[6-9]\d{9}$/.test(v)) { $("mobile-err").textContent = "Enter a 10-digit Indian mobile number."; return; } S.phone = v.slice(0, 5) + " " + v.slice(5); S.otpSent = true; log(`OTP sent to +91 ${S.phone}`); render(); setTimeout(() => $("otp")?.focus(), 50); return; }
     if (d.act === "demo-otp") { S.otp = "246810"; render(); return; }
     if (d.act === "verify-otp") { const v = ($("otp")?.value || "").trim(); if (!/^\d{6}$/.test(v)) { $("otp-err").textContent = "Enter all 6 digits. Any 6 digits work in this demo."; return; } S.otp = v; S.verified = true; S.fetching = true; log("Mobile verified · fetching CKYC & bank"); render(); setTimeout(() => { S.fetching = false; log("KYC pre-filled · penny-drop name match"); if (S.step === "verify") render(); }, 1100); return; }
     if (d.act === "kyc-ok") { S.name = $("name")?.value || S.name; S.email = $("email")?.value || S.email; go("pay"); return; }
