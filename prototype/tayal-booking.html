@@ -58,6 +58,17 @@ button { cursor: pointer; }
 h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 400; }
 p { margin: 0; }
 
+/* ── Concept label ── */
+.concept { background: var(--ink); color: var(--on-ink); font-size: 12px; }
+.concept-in { max-width: 1320px; margin: 0 auto; padding-block: 7px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); letter-spacing: .02em; }
+/* ── Tayal brand blocks ── */
+.human { background: var(--ink); color: var(--on-ink); border-radius: var(--r-m); padding: 18px; display: grid; gap: 14px; }
+.human .eyebrow { color: var(--brass); }
+.human .fact { border-top-color: color-mix(in srgb, var(--on-ink) 25%, transparent); }
+.human .fact span { color: color-mix(in srgb, var(--on-ink) 70%, transparent); }
+.pf { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.pf-i { flex: 0 0 140px; border: 1px solid var(--line-soft); background: var(--raised); border-radius: 12px; padding: 12px; display: grid; gap: 2px; }
+.pf-i .d-m { font-size: 22px; }
 /* ── Top bar ── */
 .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--canvas) 88%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
 .top-in { max-width: 1320px; margin: 0 auto; padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; align-items: center; gap: 16px; }
@@ -332,6 +343,7 @@ p { margin: 0; }
 }
 </style>
 
+<div class="concept"><div class="concept-in">Concept prototype for Tayal Corp · demo data · no real payments, KYC or messages</div></div>
 <header class="top">
   <div class="top-in">
     <div class="wordmark"><b>TAYAL</b><span>Built to Differ</span></div>
@@ -658,7 +670,21 @@ p { margin: 0; }
         <button type="button" class="cfg" data-cfg="${c.bhk}" aria-pressed="${S.bhk === c.bhk}">
           <div class="cfg-head"><span class="d-m">${c.bhk} BHK</span><span class="chip brass tab">${s.av} available</span></div>
           <div style="display:flex;justify-content:space-between;gap:10px;font-size:14px"><span class="tab">${fmt(s.cmin)}${s.cmax !== s.cmin ? "–" + fmt(s.cmax) : ""} sq.ft carpet</span><b class="tab">${short(s.min)} onwards</b></div>
-        </button>`; }).join("")}`;
+        </button>`; }).join("")}
+      ${tayalBlock()}`;
+  }
+
+  function tayalBlock() {
+    const pf = [["K Pune", "Bavdhan", "2, 3 & 4 BHK"], ["K Town", "Kiwale", "3 & 4 BHK"], ["K Ville", "Kiwale", "2, 2.5 & 3 BHK"], ["K Shire", "Punawale", "2 & 3 BHK"], ["Envogue", "Akurdi", "3 & 4 BHK"]];
+    return `
+      <div class="human">
+        <p class="eyebrow">Tayal for Humans</p>
+        <p class="d-m">Homes planned by an architect-led team, around the people who live in them.</p>
+        <div class="facts"><div class="fact"><b>13+ yrs</b><span>Building in Pune</span></div><div class="fact"><b class="tab">2,000+</b><span>Homes &amp; spaces</span></div><div class="fact"><b class="tab">13</b><span>Projects</span></div></div>
+      </div>
+      <div style="display:grid;gap:8px"><p class="lbl">More Tayal addresses</p>
+        <div class="pf">${pf.map(([n, l, c]) => `<div class="pf-i"><b class="d-m">${n}</b><span class="cap">${l}</span><span class="cap">${c}</span></div>`).join("")}</div>
+      </div>`;
   }
 
   function screenConfig() {
@@ -830,7 +856,7 @@ p { margin: 0; }
     const u = unit(); const b = S.booking;
     const slots = ["Sat · 11:00", "Sat · 15:30", "Sun · 11:00"];
     return `
-      <div class="success enter"><div class="seal">${icon.check.replace('width="14" height="14"', 'width="28" height="28"')}</div><p class="eyebrow">Approved · ${dfmt(b.decidedAt)}</p><h1 class="d-l">Welcome to Envogue 2.0.</h1><p class="lead">Flat ${u.flat} is allotted to ${esc(S.name.split(" ")[0])}. Two things left.</p></div>
+      <div class="success enter"><div class="seal">${icon.check.replace('width="14" height="14"', 'width="28" height="28"')}</div><p class="eyebrow">Approved · ${dfmt(b.decidedAt)}</p><h1 class="d-l">Welcome to the Tayal family.</h1><p class="lead">Flat ${u.flat} is allotted to ${esc(S.name.split(" ")[0])}. Two things left.</p></div>
       <div style="display:grid;gap:8px"><p class="lbl">1 · Connect with a home-loan banker</p>
         ${BANKS.map(([k, n]) => `<button type="button" class="bank" data-bank="${k}" aria-pressed="${S.bank === k}"><span class="mk">${k.slice(0, 4)}</span><span style="flex:1"><b style="display:block;font-size:14px">${n}</b><small class="cap">${S.bank === k ? "Banker will call you within 2 working hours" : "Request a call-back"}</small></span>${S.bank === k ? `<span class="chip ok">${icon.check} Requested</span>` : ""}</button>`).join("")}
         <p class="cap">Partner list is illustrative. Your file is shared with the bank you pick.</p>
