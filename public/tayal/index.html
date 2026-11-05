@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>Tayal Envogue 2.0 Booking</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Montserrat:wght@400;500;600;700&family=Noto+Serif+Display:wght@500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: journey rail (Tayal's own flowchart) · the Envogue 2.0 booking app in a phone · builder CRM.
+   Two brand layers, both taken from Tayal's own material:
+   - Tayal Corp (tayalcorp.com): white paper, ink, one Tayal red, uppercase heavy serif headlines.
+   - Envogue 2.0 ("Black is Beautiful" brochure): black ground, ivory Didone, the green leaf. */
+:root {
+  --paper: #FFFFFF; --mist: #F4F4F2; --ink: #111111; --ink-soft: #333333; --muted: #6B6B6B;
+  --line: #DCDCDC; --line-soft: #EDEDED; --red: #BE0A0A; --red-soft: #FBE9E9; --on-ink: #FFFFFF;
+  --ok: #1E6B43; --ok-soft: #E3F1E8; --warn: #8A5300; --warn-soft: #F8EEDC;
+  /* Envogue 2.0 app world (constant in both themes: the brand is black) */
+  --e-bg: #0A0A0A; --e-surface: #141414; --e-raised: #1B1B1B; --e-line: #2B2B2B; --e-line-soft: #202020;
+  --e-ivory: #F3EFE8; --e-muted: #9C978F; --e-red: #D9161D; --e-leaf: #7CC242; --e-hatch: #3A3A3A;
+  --e-ok: #86D0A5; --e-ok-soft: #13261B; --e-warn: #E8B566; --e-warn-soft: #2A2112;
+  --f-tayal: "Playfair Display", "Bodoni 72", Didot, Georgia, serif;
+  --f-envogue: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-mark: "Noto Serif Display", "Playfair Display", Didot, Georgia, serif;
+  --f-ui: "Montserrat", "Gotham", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --e-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --paper: #111111; --mist: #0A0A0A; --ink: #F3F3F3; --ink-soft: #CFCFCF; --muted: #9A9A9A; --line: #2E2E2E; --line-soft: #222222; --red: #E3262C; --red-soft: #2B1213; --on-ink: #111111; --ok: #7CC79E; --ok-soft: #13261B; --warn: #E5B061; --warn-soft: #2A2112; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --paper: #111111; --mist: #0A0A0A; --ink: #F3F3F3; --ink-soft: #CFCFCF; --muted: #9A9A9A; --line: #2E2E2E; --line-soft: #222222; --red: #E3262C; --red-soft: #2B1213; --on-ink: #111111; --ok: #7CC79E; --ok-soft: #13261B; --warn: #E5B061; --warn-soft: #2A2112; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ink); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.tab { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--f-mono); font-size: .86em; letter-spacing: -.01em; }
+h1, h2, h3, h4 { text-wrap: balance; margin: 0; font-weight: 400; }
+p { margin: 0; }
+img { display: block; max-width: 100%; }
+
+/* ── Tayal corporate chrome ── */
+.concept { background: var(--ink); color: var(--on-ink); font-size: 11.5px; letter-spacing: .04em; }
+.concept-in, .top-in, .wrap { max-width: 1340px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.concept-in { padding-block: 7px; }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.top-in { padding-block: 10px; display: flex; align-items: center; gap: 18px; }
+.logo { display: grid; justify-items: center; gap: 4px; text-decoration: none; color: var(--ink); }
+.logo i { display: block; width: 52px; height: 15px; background: var(--red); }
+.logo b { font-family: var(--f-mark); font-weight: 500; font-size: 24px; letter-spacing: .05em; line-height: 1; }
+.tagline { font-family: var(--f-tayal); font-weight: 700; font-size: 11px; line-height: 1.1; letter-spacing: .02em; text-transform: uppercase; border-left: 1px solid var(--line); padding-left: 16px; }
+@media (max-width: 560px) { .tagline { display: none; } }
+.views { margin-left: auto; display: flex; gap: 2px; }
+.views a { text-decoration: none; color: var(--ink); font-weight: 600; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; padding: 9px 12px; border-bottom: 2px solid transparent; white-space: nowrap; }
+.views a[aria-current="page"] { border-color: var(--red); }
+@media (max-width: 480px) { .top-in { gap: 10px; } .views a { padding: 9px 6px; font-size: 10.5px; letter-spacing: .06em; } .logo b { font-size: 20px; } .logo i { width: 44px; height: 12px; } }
+
+.wrap { padding-block: 28px 56px; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 404px minmax(0, 1fr); gap: 36px; align-items: start; }
+@media (max-width: 1200px) { .stage { grid-template-columns: minmax(0, 1fr) 404px; } .crm { grid-column: 1; grid-row: 2; } }
+@media (max-width: 880px) { .stage { grid-template-columns: minmax(0, 1fr); } .rail { display: none; } .crm { grid-column: auto; grid-row: auto; } }
+
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--red); }
+.t-tayal { font-family: var(--f-tayal); font-weight: 800; text-transform: uppercase; letter-spacing: -.01em; line-height: 1; }
+.t-tayal .r, .r { color: var(--red); }
+.lbl { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.cap { font-size: 12px; color: var(--muted); }
+
+/* Rail */
+.rail { position: sticky; top: 92px; }
+.rail h2 { font-size: 34px; margin-top: 12px; }
+.rail .lede { color: var(--ink-soft); margin-top: 12px; max-width: 36ch; }
+.dotline { display: flex; align-items: center; margin: 22px 0 6px; }
+.dotline i { width: 18px; height: 18px; border-radius: 50%; background: var(--red); flex: none; }
+.dotline::after { content: ""; height: 2px; background: var(--red); flex: 1; }
+.flow { list-style: none; margin: 14px 0 0; padding: 0; position: relative; }
+.flow::before { content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 1px; background: var(--line); }
+.flow li { position: relative; }
+.flow button { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: none; border: 0; padding: 5px 0; color: var(--muted); font-size: 13.5px; }
+.flow .dot { position: relative; z-index: 1; width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); border: 1px solid var(--line); font-size: 10px; font-weight: 700; flex: none; transition: background 200ms var(--e-out); }
+.flow li.done .dot { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.flow li.now button { color: var(--ink); font-weight: 700; }
+.flow li.now .dot { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 0 0 5px var(--red-soft); }
+.flow li.branch { padding-left: 20px; }
+.flow li.branch::before { content: ""; position: absolute; left: 11px; top: 16px; width: 18px; height: 1px; background: var(--line); }
+@media (hover: hover) and (pointer: fine) { .flow button:hover { color: var(--ink); } }
+
+/* ── Phone: the Envogue 2.0 world ── */
+.phone { --bg: var(--e-bg); --surface: var(--e-surface); --raised: var(--e-raised); --fg: var(--e-ivory); --muted: var(--e-muted); --line: var(--e-line); --line-soft: var(--e-line-soft); --accent: var(--e-red); --ok: var(--e-ok); --ok-soft: var(--e-ok-soft); --warn: var(--e-warn); --warn-soft: var(--e-warn-soft);
+  position: relative; width: 100%; max-width: 404px; margin: 0 auto; height: 840px; max-height: calc(100svh - 120px); min-height: 660px; background: var(--bg); color: var(--fg); border-radius: 46px; border: 10px solid #000; outline: 1px solid var(--line); box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 40px 80px -30px rgba(0,0,0,.55); overflow: hidden; display: flex; flex-direction: column; color-scheme: dark; }
+@media (max-width: 880px) { .phone { border-radius: 24px; border-width: 0; height: auto; max-height: none; min-height: 0; } .screen { overflow: visible !important; } .status-bar { display: none !important; } }
+.status-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 24px 2px; font-size: 12px; font-weight: 600; }
+.appbar { display: flex; align-items: center; gap: 10px; padding: 8px 16px 10px; border-bottom: 1px solid var(--line-soft); min-height: 54px; }
+.back { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--raised); display: grid; place-items: center; transition: transform 120ms var(--e-out); flex: none; color: var(--fg); }
+.back:active { transform: scale(.94); }
+.emark { width: 36px; height: 36px; display: grid; place-items: center; flex: none; font-family: var(--f-envogue); font-size: 13px; line-height: .8; text-align: center; }
+.appbar .t { min-width: 0; }
+.appbar .t small { display: block; font-size: 10.5px; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
+.appbar .t strong { display: block; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hold { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--accent); color: var(--fg); white-space: nowrap; }
+.hold i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.screen { flex: 1; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.pad { padding: 18px 18px 26px; display: grid; gap: 16px; }
+.pad.flush { padding-top: 0; }
+.cta-bar { padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line-soft); background: var(--bg); display: grid; gap: 8px; }
+.cta-sum { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+.cta-sum b { color: var(--fg); font-size: 18px; letter-spacing: 0; }
+.enter { animation: enter 300ms var(--e-out) both; }
+@keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Envogue type */
+.e-xl { font-family: var(--f-envogue); font-weight: 400; font-size: 46px; line-height: .92; letter-spacing: -.02em; }
+.e-l { font-family: var(--f-envogue); font-weight: 400; font-size: 31px; line-height: 1.04; letter-spacing: -.01em; }
+.e-m { font-family: var(--f-envogue); font-weight: 500; font-size: 22px; line-height: 1.1; }
+.e-it { font-style: italic; }
+.tracked { font-size: 10.5px; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
+.phone .lead { color: color-mix(in srgb, var(--fg) 78%, transparent); font-size: 14.5px; }
+.phone .cap { color: var(--muted); }
+.phone .t-tayal { font-size: 25px; line-height: 1.02; }
+.phone .r { color: var(--accent); }
+
+/* Buttons — Tayal: square, uppercase, tracked */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 2px; border: 1px solid transparent; font-weight: 600; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; padding: 16px 18px; transition: transform 140ms var(--e-out), background 160ms, opacity 160ms; text-decoration: none; white-space: nowrap; }
+.btn:active { transform: scale(.97); }
+.btn-ink { background: var(--ink); color: var(--on-ink); }
+.btn-red { background: var(--red); color: #fff; }
+.btn-line { background: transparent; border-color: var(--line); color: var(--ink); }
+.phone .btn-ink { background: var(--fg); color: var(--bg); }
+.phone .btn-red { background: var(--accent); color: #fff; }
+.phone .btn-line { border-color: var(--line); color: var(--fg); }
+.btn-block { width: 100%; }
+.btn[disabled] { opacity: .3; pointer-events: none; }
+.btn-sm { padding: 10px 12px; font-size: 11px; }
+
+.card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg); white-space: nowrap; }
+.chip.ok { border-color: transparent; background: var(--ok-soft); color: var(--ok); }
+.chip.warn { border-color: transparent; background: var(--warn-soft); color: var(--warn); }
+.chip.red { border-color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.note { border: 1px solid var(--line-soft); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: color-mix(in srgb, var(--fg) 80%, transparent); }
+.err { color: var(--warn); font-size: 13px; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 3px; }
+.seg button { border: 0; background: transparent; padding: 9px 6px; border-radius: 999px; font-weight: 600; font-size: 12px; letter-spacing: .06em; color: var(--muted); transition: background 160ms var(--e-out), color 160ms; }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.seg button:disabled { opacity: .3; }
+.fld { display: grid; gap: 6px; }
+.fld label { font-size: 12px; font-weight: 600; letter-spacing: .06em; }
+.in { width: 100%; background: var(--raised); border: 1px solid var(--line); border-radius: 10px; padding: 14px; font-size: 16px; color: var(--fg); }
+.in:focus { outline: none; border-color: var(--accent); }
+.otp { letter-spacing: .6em; font-family: var(--f-mono); font-size: 22px; text-align: center; }
+
+/* Landing */
+.hero { position: relative; margin: 0 -18px; height: 330px; overflow: hidden; }
+.hero img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; animation: drift 18s var(--e-out) both; }
+@keyframes drift { from { transform: scale(1.08); } to { transform: scale(1.0); } }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,10,10,0) 30%, rgba(10,10,10,.55) 62%, var(--e-bg) 100%); }
+.hero .mark { position: absolute; left: 18px; bottom: 18px; z-index: 1; display: flex; gap: 30px; align-items: flex-end; }
+.stack { font-family: var(--f-envogue); font-size: 34px; line-height: .78; letter-spacing: -.03em; color: #fff; }
+.stack span { display: block; }
+.stack .two { font-size: 50px; line-height: .8; position: relative; display: inline-block; }
+.stack .two svg { position: absolute; right: -16px; top: -10px; width: 18px; height: 18px; color: var(--e-leaf); }
+.hero .mark .tracked { color: #fff; opacity: .85; padding-bottom: 6px; line-height: 1.7; }
+.hero .rera { position: absolute; right: 14px; top: 14px; z-index: 1; font-size: 10px; letter-spacing: .12em; color: #fff; background: rgba(0,0,0,.45); backdrop-filter: blur(6px); border-radius: 999px; padding: 5px 10px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.fact { border-top: 1px solid var(--line); padding-top: 9px; }
+.fact b { display: block; font-family: var(--f-envogue); font-weight: 500; font-size: 20px; line-height: 1.05; }
+.fact span { font-size: 10.5px; color: var(--muted); letter-spacing: .06em; }
+.cfg { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; padding: 15px 16px; text-align: left; width: 100%; border: 1px solid var(--line-soft); background: var(--surface); border-radius: 14px; color: var(--fg); transition: border-color 160ms, transform 140ms var(--e-out); }
+.cfg:active { transform: scale(.985); }
+.cfg[aria-pressed="true"] { border-color: var(--accent); }
+.cfg .e-m { font-size: 24px; }
+.cfg .px { font-weight: 700; font-size: 15px; text-align: right; }
+.cfg .meta { font-size: 12px; color: var(--muted); }
+.strip { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; margin: 0 -18px; padding: 0 18px; scroll-snap-type: x mandatory; }
+.shot { flex: 0 0 76%; scroll-snap-align: start; border-radius: 14px; overflow: hidden; position: relative; aspect-ratio: 4 / 3; background: var(--raised); }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot span { position: absolute; left: 12px; bottom: 10px; font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.6); }
+.dist { display: grid; grid-template-columns: 1fr auto; gap: 0; font-size: 13px; }
+.dist div { padding: 9px 0; border-bottom: 1px solid var(--line-soft); }
+.dist div:nth-child(even) { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Plans & specs */
+.plan { border-radius: 14px; overflow: hidden; border: 1px solid var(--line-soft); background: #110f10; }
+.plan img { width: 100%; }
+.plan figcaption { display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--line-soft); letter-spacing: .04em; }
+.specs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13.5px; }
+.specs li { display: flex; gap: 10px; color: color-mix(in srgb, var(--fg) 85%, transparent); }
+.specs li::before { content: ""; width: 14px; height: 1px; background: var(--accent); margin-top: 10px; flex: none; }
+.kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.kv span { display: block; font-size: 10.5px; color: var(--muted); letter-spacing: .06em; }
+.kv b { font-size: 14px; font-weight: 600; }
+
+/* Cost sheet */
+.sheet { padding: 2px 16px; }
+.line { display: flex; justify-content: space-between; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+.line:last-child { border-bottom: 0; }
+.line .k { min-width: 0; }
+.line .k small { display: block; color: var(--muted); font-size: 11.5px; }
+.line .v { white-space: nowrap; font-variant-numeric: tabular-nums; font-weight: 500; }
+.line.sub { font-weight: 700; }
+.line.new { animation: flash 900ms var(--e-out); }
+@keyframes flash { from { background: color-mix(in srgb, var(--accent) 22%, transparent); } to { background: transparent; } }
+.total { border: 1px solid var(--fg); border-radius: 14px; padding: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.total .big { font-family: var(--f-envogue); font-size: 36px; line-height: 1; }
+.total small { display: block; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.promise { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.promise span { border-left: 1.5px solid var(--fg); padding-left: 10px; font-weight: 600; font-size: 12.5px; line-height: 1.3; }
+.zero { display: flex; gap: 10px; align-items: center; font-weight: 700; font-size: 13px; letter-spacing: .02em; }
+.zero b { font-family: var(--f-tayal); font-size: 34px; line-height: .8; color: var(--accent); }
+
+/* Unit picker */
+.bldg { border: 1px solid var(--line-soft); border-radius: 14px; background: var(--surface); padding: 12px 12px 8px; }
+.floors { display: grid; gap: 3px; }
+.frow { display: grid; grid-template-columns: 30px repeat(4, minmax(0, 1fr)); gap: 3px; align-items: center; }
+.frow .fl { font-size: 10px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.refuge { display: grid; grid-template-columns: 30px 1fr; gap: 3px; align-items: center; }
+.refuge span:last-child { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); text-align: center; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 2px 0; }
+.u { border: 1px solid var(--line); background: transparent; border-radius: 4px; height: 20px; font-size: 9.5px; font-weight: 700; display: grid; place-items: center; color: var(--muted); padding: 0; transition: transform 120ms var(--e-out), background 160ms; }
+.u.av { background: color-mix(in srgb, var(--fg) 88%, transparent); border-color: transparent; color: var(--bg); }
+.u.hd { border-style: dashed; border-color: var(--muted); }
+.u.bk { background: repeating-linear-gradient(135deg, var(--e-hatch) 0 2px, transparent 2px 5px); color: transparent; }
+.u.sel { background: var(--accent); color: #fff; }
+.u:not([disabled]):active { transform: scale(.94); }
+.colhead { display: grid; grid-template-columns: 30px repeat(4, minmax(0, 1fr)); gap: 3px; margin-top: 6px; font-size: 9.5px; color: var(--muted); text-align: center; letter-spacing: .06em; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex: none; }
+.sw.av { background: color-mix(in srgb, var(--fg) 88%, transparent); }
+.sw.hd { border: 1.5px dashed var(--muted); }
+.sw.bk { background: repeating-linear-gradient(135deg, var(--e-hatch) 0 2px, transparent 2px 5px); border: 1px solid var(--e-hatch); }
+.sw.sel { background: var(--accent); }
+.unit-card { padding: 14px 16px; display: grid; gap: 10px; }
+
+/* Parking */
+.lot { border: 1px solid var(--line-soft); border-radius: 14px; background: var(--surface); padding: 14px; display: grid; gap: 14px; }
+.zone h4 { margin: 0 0 8px; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.zone h4 span { font-weight: 500; color: var(--muted); font-size: 11.5px; text-align: right; }
+.bays { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; }
+.bay { height: 52px; border-radius: 6px; border: 1px solid var(--line); background: transparent; display: grid; place-items: center; align-content: center; gap: 3px; font-size: 10px; font-weight: 700; color: var(--fg); padding: 0; transition: transform 120ms var(--e-out), background 160ms; }
+.bay svg { width: 14px; height: 14px; }
+.bay.taken { background: repeating-linear-gradient(135deg, var(--e-hatch) 0 2px, transparent 2px 6px); color: transparent; border-color: var(--e-hatch); }
+.bay.taken svg { opacity: 0; }
+.bay.sel { background: var(--accent); border-color: var(--accent); color: #fff; }
+.bay:not([disabled]):active { transform: scale(.94); }
+.lane { border-top: 1px dashed var(--line); margin: 4px 0; position: relative; height: 0; }
+.lane span { position: absolute; left: 50%; top: -8px; transform: translateX(-50%); background: var(--surface); padding: 0 8px; font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+
+/* Add-ons */
+.addon { display: flex; gap: 12px; align-items: center; padding: 13px 14px; border: 1px solid var(--line-soft); border-radius: 12px; background: var(--surface); text-align: left; width: 100%; color: var(--fg); transition: border-color 160ms; }
+.addon[aria-pressed="true"] { border-color: var(--accent); }
+.tick { width: 22px; height: 22px; border-radius: 5px; border: 1.5px solid var(--line); display: grid; place-items: center; flex: none; }
+.addon[aria-pressed="true"] .tick { background: var(--accent); border-color: var(--accent); color: #fff; }
+.addon .a-t { flex: 1; min-width: 0; }
+.addon .a-t b { display: block; font-size: 13.5px; font-weight: 600; }
+.addon .a-t small { color: var(--muted); font-size: 11.5px; }
+.addon .a-p { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* KYC, pay */
+.vrow { display: flex; justify-content: space-between; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+.vrow:last-child { border-bottom: 0; }
+.vrow span { color: var(--muted); }
+.vrow b { font-weight: 600; text-align: right; }
+.consent { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; color: color-mix(in srgb, var(--fg) 82%, transparent); }
+.consent input { width: 20px; height: 20px; accent-color: var(--e-red); margin-top: 1px; flex: none; }
+.skeleton { height: 14px; border-radius: 6px; background: linear-gradient(90deg, var(--line-soft), var(--raised), var(--line-soft)); background-size: 200% 100%; animation: shimmer 1s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.pay-sum { padding: 16px; display: grid; gap: 9px; }
+.pay-sum .row { display: flex; justify-content: space-between; font-size: 13.5px; gap: 10px; }
+.pay-sum .row.t { font-size: 17px; font-weight: 700; padding-top: 9px; border-top: 1px solid var(--line-soft); }
+.method { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 14px; border-radius: 12px; border: 1px solid var(--line-soft); background: var(--surface); color: var(--fg); }
+.method[aria-pressed="true"] { border-color: var(--fg); }
+.method .ic { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); display: grid; place-items: center; font-weight: 700; font-size: 10px; letter-spacing: .06em; flex: none; }
+.radio { margin-left: auto; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--line); flex: none; }
+.method[aria-pressed="true"] .radio { border: 5px solid var(--fg); }
+.overlay { position: absolute; inset: 0; background: rgba(10,10,10,.92); backdrop-filter: blur(4px); display: grid; place-items: center; z-index: 5; animation: enter 200ms var(--e-out) both; }
+.spinner { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent); animation: spin 800ms linear infinite; margin: 0 auto 14px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Confirmation, review, outcomes */
+.sync { list-style: none; margin: 0; padding: 0; }
+.sync li { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; align-items: flex-start; animation: enter 320ms var(--e-out) both; }
+.sync li:last-child { border-bottom: 0; }
+.ok-ic { width: 22px; height: 22px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); display: grid; place-items: center; flex: none; }
+.sync small { display: block; color: var(--muted); font-size: 11.5px; }
+.ring { display: grid; place-items: center; position: relative; width: 200px; height: 200px; margin: 4px auto 0; }
+.ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.ring .c { text-align: center; }
+.ring .c b { font-family: var(--f-envogue); font-weight: 400; font-size: 40px; line-height: 1; display: block; font-variant-numeric: tabular-nums; }
+.timeline { list-style: none; margin: 0; padding: 0 16px; }
+.timeline li { position: relative; padding: 0 0 16px 28px; font-size: 13.5px; }
+.timeline li::before { content: ""; position: absolute; left: 6px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.timeline li::after { content: ""; position: absolute; left: 10px; top: 18px; bottom: 0; width: 1px; background: var(--line); }
+.timeline li:last-child::after { display: none; }
+.timeline li.done::before { background: var(--ok); }
+.timeline li.now::before { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent); }
+.timeline small { display: block; color: var(--muted); font-size: 11.5px; }
+.success { text-align: center; display: grid; gap: 8px; justify-items: center; padding-top: 6px; }
+.seal { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--ok); color: var(--ok); }
+.seal.warn { border-color: var(--warn); color: var(--warn); }
+.bank { display: flex; align-items: center; gap: 12px; padding: 12px 14px; width: 100%; text-align: left; border: 1px solid var(--line-soft); border-radius: 12px; background: var(--surface); color: var(--fg); }
+.bank[aria-pressed="true"] { border-color: var(--accent); }
+.bank .mk { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--line); display: grid; place-items: center; font-size: 10px; font-weight: 700; flex: none; }
+.slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.slot { padding: 11px 6px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--fg); font-size: 12px; font-weight: 600; text-align: center; }
+.slot[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.photo-banner { margin: 0 -18px; height: 180px; overflow: hidden; position: relative; }
+.photo-banner img { width: 100%; height: 100%; object-fit: cover; }
+.photo-banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, var(--e-bg)); }
+
+/* ── CRM (Tayal corporate) ── */
+.crm { position: sticky; top: 92px; display: grid; gap: 14px; }
+.panel { border: 1px solid var(--line); border-radius: 18px; padding: 18px; background: var(--paper); position: relative; }
+.frame { position: relative; }
+.frame::before, .frame::after { content: ""; position: absolute; pointer-events: none; width: 44%; height: 46%; }
+.frame::before { left: -1px; top: -1px; border-top: 2.5px solid var(--red); border-left: 2.5px solid var(--red); border-top-left-radius: 20px; }
+.frame::after { right: -1px; bottom: -1px; border-bottom: 2.5px solid var(--red); border-right: 2.5px solid var(--red); border-bottom-right-radius: 20px; }
+.crm-h { display: flex; align-items: center; gap: 10px; }
+.sf { width: 32px; height: 32px; border-radius: 8px; background: #0B5CAB; color: #fff; display: grid; place-items: center; font-size: 9.5px; font-weight: 800; letter-spacing: .04em; flex: none; }
+.crm dl { margin: 12px 0 0; }
+.crm dl div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line-soft); font-size: 13px; }
+.crm dl div:last-child { border-bottom: 0; }
+.crm dt { color: var(--muted); }
+.crm dd { margin: 0; font-weight: 600; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
+.pill.red { border-color: var(--red); color: var(--red); }
+.pill.ok { border-color: transparent; background: var(--ok-soft); color: var(--ok); }
+.pill.warn { border-color: transparent; background: var(--warn-soft); color: var(--warn); }
+.feed { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 12.5px; max-height: 220px; overflow: auto; }
+.feed li { display: flex; gap: 8px; color: var(--ink-soft); }
+.feed time { color: var(--muted); font-size: 11px; flex: none; padding-top: 1px; font-variant-numeric: tabular-nums; }
+.decide { display: grid; gap: 8px; margin-top: 12px; }
+.sel-in { width: 100%; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 10px; font-size: 13px; color: var(--ink); }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); animation: pulse 1.8s infinite; flex: none; margin-left: auto; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 50%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
+
+/* ── Design system ── */
+.ds { display: grid; gap: 56px; }
+.ds-hero { display: grid; gap: 16px; max-width: 900px; }
+.ds-hero h1 { font-size: clamp(44px, 7.4vw, 92px); }
+.ds-sec { display: grid; gap: 18px; }
+.ds-sec > header { display: grid; gap: 6px; }
+.ds-sec > header h2 { font-size: 32px; }
+.ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.swatch { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+.swatch .c { height: 88px; }
+.swatch .m { padding: 10px 12px; display: grid; gap: 2px; font-size: 12.5px; }
+.swatch .m b { font-size: 13.5px; }
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.principle { padding: 20px; display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 18px; }
+.principle h3 { font-family: var(--f-tayal); font-weight: 800; text-transform: uppercase; font-size: 19px; line-height: 1.05; }
+.spec { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line-soft); }
+@media (max-width: 640px) { .spec { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+.spec .meta { font-size: 12px; color: var(--muted); }
+.duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.world { border-radius: 18px; padding: 22px; display: grid; gap: 10px; min-height: 220px; align-content: end; position: relative; overflow: hidden; }
+.world.tayal { border: 1px solid var(--line); background: var(--paper); }
+.world.envogue { background: var(--e-bg); color: var(--e-ivory); }
+.world.envogue .cap { color: var(--e-muted); }
+.comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+.comp { padding: 20px; display: grid; gap: 14px; align-content: start; border-radius: 18px; }
+.comp.light { border: 1px solid var(--line); }
+.comp.dark { background: var(--e-bg); color: var(--e-ivory); --bg: var(--e-bg); --surface: var(--e-surface); --raised: var(--e-raised); --fg: var(--e-ivory); --muted: var(--e-muted); --line: var(--e-line); --line-soft: var(--e-line-soft); --accent: var(--e-red); --ok: var(--e-ok); --ok-soft: var(--e-ok-soft); }
+.comp.dark .lbl { color: var(--e-muted); }
+.comp .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.foot { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--muted); max-width: 90ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+}
+</style>
+
+<div class="concept"><div class="concept-in">Concept prototype for Tayal Corp · demo data · no real payments, KYC or messages</div></div>
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#prototype" aria-label="Tayal"><i></i><b>TΛYΛL</b></a>
+    <span class="tagline">Trendsetters<br>in real estate</span>
+    <nav class="views" aria-label="Views">
+      <a href="#prototype" id="v-proto">Booking app</a>
+      <a href="#system" id="v-system">Design system</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="view-proto">
+    <div class="stage">
+      <aside class="rail" aria-label="Booking journey">
+        <p class="eyebrow">Envogue 2.0 · online booking</p>
+        <h2 class="t-tayal">The final price.<br><span class="r">Booked online.</span></h2>
+        <p class="lede">Tayal's booking journey for Envogue 2.0, live and clickable. Tap any step to jump to it.</p>
+        <div class="dotline"><i></i></div>
+        <ol class="flow" id="flow"></ol>
+      </aside>
+
+      <div>
+        <div class="phone" id="phone">
+          <div class="status-bar"><span class="tab" id="clock">9:41</span><span>5G ▮</span></div>
+          <div class="appbar" id="appbar"></div>
+          <div class="screen" id="screen"></div>
+          <div class="cta-bar" id="cta" hidden></div>
+        </div>
+      </div>
+
+      <aside class="crm" aria-label="Builder CRM view">
+        <div class="panel frame">
+          <div class="crm-h">
+            <span class="sf">SFDC</span>
+            <div><p class="lbl">Tayal CRM · builder view</p><p style="font-weight:700">Opportunity</p></div>
+            <span class="pulse" title="Live"></span>
+          </div>
+          <dl id="crm"></dl>
+          <div id="decide"></div>
+        </div>
+        <div class="panel">
+          <p class="lbl">Activity</p>
+          <ul class="feed" id="feed"></ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="view-system" hidden>
+    <div class="ds" id="ds"></div>
+  </section>
+
+  <p class="foot">Concept prototype prepared for Tayal Corp. Project details for Envogue 2.0 (MahaRERA P52100077680, CTS No. 4667, Old Mumbai Rd., PCMC Central, Kalbhor Nagar, Akurdi; wings K-1 to K-3 unit series and carpet areas; specifications, amenities and distances) and all renders and plans are taken from Tayal's brochure, floor-plan book and tayalcorp.com; renders are artistic impressions. Live availability, rates beyond the published starting prices, parking bays, upgrades, people and the payment, KYC, Salesforce and messaging integrations are simulated for demonstration.</p>
+</main>
+
+<script>
+(() => {
+  // ───────────────────────── Data (from Tayal's brochure & floor-plan book) ─────────────────────────
+  const CONFIGS = {
+    "2":  { key: "2",  name: "2 BHK", wing: "K1", carpet: 800,  plan: "img/plan-2bhk.jpg",   series: [1, 4], title: "Smart 2 BHK", who: "Wing K-1 · flats 01 & 04" },
+    "3":  { key: "3",  name: "3 BHK", wing: "K1", carpet: 916,  plan: "img/plan-3bhk.jpg",   series: [2, 3], title: "Compact 3 BHK", who: "Wing K-1 · flats 02 & 03" },
+    "3S": { key: "3S", name: "3 Bed Suite", wing: "K2", carpet: 1265, plan: "img/plan-3suite.jpg", series: [1, 2, 3, 4], title: "3 Bed Suite", who: "Wing K-2 · four suites a floor" },
+    "4S": { key: "4S", name: "4 Bed Suite", wing: "K3", carpet: 1840, plan: "img/plan-4suite.jpg", series: [1, 2, 3, 4], title: "4 Bed Suite", who: "Wing K-3 · four suites a floor" },
+  };
+  const BHK = { "2": 2, "3": 3, "3S": 3, "4S": 4 };
+  const WINGS = {
+    K1: { name: "Wing K-1", from: 13, to: 36, refuge: [], series: { 1: "2", 2: "3", 3: "3", 4: "2" } },
+    K2: { name: "Wing K-2", from: 3, to: 36, refuge: [7, 12, 17, 22, 27, 32], series: { 1: "3S", 2: "3S", 3: "3S", 4: "3S" } },
+    K3: { name: "Wing K-3", from: 3, to: 36, refuge: [7, 12, 17, 22, 27, 32], series: { 1: "4S", 2: "4S", 3: "4S", 4: "4S" } },
+  };
+  const RATE = 13150; // ₹/sq.ft RERA carpet — calibrated to Tayal's published "from ₹1.80 Cr / ₹2.60 Cr"
+  const SPECS = ["Designer vitrified tiles in living, kitchen & bedrooms", "AC point in living room & all bedrooms", "Kitchen platform with sink, designer dado tiles", "Gypsum-finish internal walls, designer windows", "Premium CP & sanitary fittings, designer bathroom tiles", "Provision for inverter, Wi-Fi & water purifier"];
+  const ZONES = [
+    { id: "PD-EV", level: "Podium", kind: "EV-ready", price: 650000, n: 10, note: "Covered, charger point, by the lift lobby" },
+    { id: "PD-CV", level: "Podium", kind: "Covered", price: 500000, n: 12, note: "Covered, one level up" },
+    { id: "B1-EV", level: "Basement 1", kind: "EV-ready", price: 550000, n: 10, note: "Covered, charger point" },
+    { id: "B1-CV", level: "Basement 1", kind: "Covered", price: 400000, n: 16, note: "Covered, direct lift access" },
+    { id: "B2-ST", level: "Basement 2", kind: "Stack", price: 250000, n: 14, note: "Mechanical 2-car stack" },
+    { id: "OP-FR", level: "Open", kind: "Open", price: 0, n: 8, note: "Allotted free under RERA" },
+  ];
+  const LEVELS = ["Podium", "Basement 1", "Basement 2", "Open"];
+  const LIMIT = { "2": 1, "3": 2, "3S": 2, "4S": 3 };
+  const ADDONS = [
+    { id: "smart", t: "Smart-home automation", d: "Lights, curtains, AC and lock on your phone", p: { 2: 175000, 3: 225000, 4: 300000 } },
+    { id: "kitchen", t: "Fitted kitchen with appliances", d: "Hob, chimney, built-in oven, dishwasher", p: { 2: 350000, 3: 425000, 4: 550000 } },
+    { id: "vrv", t: "VRV air-conditioning", d: "Uses the AC points already in every room", p: { 2: 325000, 3: 450000, 4: 625000 } },
+    { id: "wardrobe", t: "Wardrobes in every bedroom", d: "Floor-to-ceiling, soft-close", p: { 2: 180000, 3: 260000, 4: 340000 } },
+    { id: "wood", t: "Engineered-wood bedrooms", d: "Warm oak flooring in all bedrooms", p: { 2: 120000, 3: 175000, 4: 240000 } },
+  ];
+  const TOKEN = 200000, TOKEN_GST = 5;
+  const BANKS = [["SBI", "State Bank of India"], ["HDFC", "HDFC Bank"], ["ICICI", "ICICI Bank"], ["AXIS", "Axis Bank"]];
+  const LIFE = [["img/lobby.jpg", "Designer arrival port"], ["img/pool.jpg", "Horizon pool & little lagoon"], ["img/fireside.jpg", "Fireside lounge"], ["img/clubhouse.jpg", "Clubhouse"], ["img/aerial.jpg", "Old Mumbai Road frontage"]];
+  const DIST = [["Akurdi metro (upcoming)", "2 min"], ["Unique Children's Hospital", "3 min"], ["PVR City One", "3 min"], ["Elpro City Square Mall", "5 min"], ["Aditya Birla Memorial Hospital", "5 min"], ["PCMC metro station", "6 min"]];
+
+  function rng(seed) { let a = seed; return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const UNITS = [];
+  for (const [wid, W] of Object.entries(WINGS)) {
+    const r = rng(wid.charCodeAt(1) * 7919);
+    for (let f = W.from; f <= W.to; f++) {
+      if (W.refuge.includes(f)) continue;
+      for (let s = 1; s <= 4; s++) {
+        const key = W.series[s]; const C = CONFIGS[key]; const x = r();
+        const sold = 0.5 - ((f - W.from) / (W.to - W.from)) * 0.38;
+        UNITS.push({ id: `${wid}-${f}${String(s).padStart(2, "0")}`, flat: `${f}${String(s).padStart(2, "0")}`, wing: wid, floor: f, s, key, bhk: BHK[key], carpet: C.carpet, high: f >= 25, corner: s === 1 || s === 4,
+          status: x < sold ? "bk" : x < sold + 0.07 ? "hd" : "av" });
+      }
+    }
+  }
+  for (const id of ["K2-1503", "K3-2401", "K1-1801", "K1-2002", "K2-2602", "K3-3003"]) { const u = UNITS.find(x => x.id === id); if (u) u.status = "av"; }
+  const TAKEN = new Set(); { const r = rng(777); for (const z of ZONES) for (let i = 1; i <= z.n; i++) if (r() < (z.kind === "EV-ready" ? .5 : z.kind === "Stack" ? .25 : .4)) TAKEN.add(`${z.id}-${String(i).padStart(2, "0")}`); }
+  const zoneOf = s => ZONES.find(z => s.startsWith(z.id + "-"));
+
+  // ───────────────────────── Money ─────────────────────────
+  const fmt = n => new Intl.NumberFormat("en-IN").format(Math.round(n));
+  const inr = n => "₹" + fmt(n);
+  const short = n => { const a = Math.abs(n); return a >= 1e7 ? "₹" + (n / 1e7).toFixed(2) + " Cr" : a >= 1e5 ? "₹" + (n / 1e5).toFixed(2).replace(/\.?0+$/, "") + " L" : inr(n); };
+  // Tayal final price = every developer charge + GST. Government stamp duty & registration are shown apart.
+  function sheet(u, parking = [], addons = []) {
+    const A = u.carpet, W = WINGS[u.wing];
+    const L = [];
+    const base = RATE * A, fr = 50 * Math.max(0, u.floor - 3) * A, plc = (u.high ? 150 : 0) * A;
+    L.push({ k: "base", t: "Base price", s: `₹${fmt(RATE)}/sq.ft × ${fmt(A)} sq.ft RERA carpet`, v: base });
+    if (fr) L.push({ k: "fr", t: "Floor rise", s: `Floor ${u.floor} · ₹50/sq.ft per floor above 3`, v: fr });
+    if (plc) L.push({ k: "plc", t: "Skyline view", s: "Floors 25 and above", v: plc });
+    L.push({ k: "club", t: "Clubhouse & amenities", s: "The Lounge, Horizon pool, Coliseum…", v: 200000 }, { k: "corpus", t: "Maintenance corpus", s: "One-time, ₹75/sq.ft", v: 75 * A }, { k: "maint", t: "Advance maintenance", s: "24 months", v: 6 * 24 * A }, { k: "legal", t: "Legal & society formation", v: 35000 });
+    let pk = 0; const byZ = {};
+    for (const s of parking) { const z = zoneOf(s); (byZ[z.id] = byZ[z.id] || []).push(s); }
+    for (const [zid, list] of Object.entries(byZ)) { const z = ZONES.find(x => x.id === zid); const v = z.price * list.length; pk += v; L.push({ k: "p-" + zid, t: `Parking · ${z.level} ${z.kind}${list.length > 1 ? " × " + list.length : ""}`, s: `Bay ${list.join(", ")}${z.price ? "" : " · allotted free"}`, v }); }
+    let ad = 0;
+    for (const id of addons) { const a = ADDONS.find(x => x.id === id); const v = a.p[u.bhk]; ad += v; L.push({ k: "a-" + id, t: a.t, s: "Upgrade", v }); }
+    const sub = L.reduce((t, l) => t + l.v, 0);
+    const gst = Math.round((base + fr + plc + 200000 + pk + ad) * 0.05);
+    const agree = base + fr + plc + pk;
+    const stamp = Math.round(agree * 0.07), reg = Math.min(Math.round(agree * 0.01), 30000);
+    const total = sub + gst;
+    return { lines: L, sub, gst, total, gov: [{ k: "stamp", t: "Stamp duty 7%", s: "Incl. metro cess & LBT, PCMC", v: stamp }, { k: "reg", t: "Registration 1%", s: "Capped at ₹30,000", v: reg }], govt: stamp + reg, pk, ad, wing: W.name };
+  }
+  const price = u => sheet(u).total;
+  function cfgSummary(key) {
+    const list = UNITS.filter(u => u.key === key);
+    const p = list.map(u => ({ u, p: price(u) })).sort((a, b) => a.p - b.p);
+    return { n: list.length, av: list.filter(u => u.status === "av").length, min: p[0].p, max: p[p.length - 1].p, rep: p[0].u };
+  }
+
+  // ───────────────────────── State ─────────────────────────
+  const S = { step: "landing", cfg: null, unit: null, holdEnd: null, level: "Podium", parking: [], addons: [], phone: "", otpSent: false, otp: "", verified: false, fetching: false, consent: false, name: "Aarav Deshmukh", email: "aarav.d@example.com", method: "upi", paying: false, booking: null, syncShown: 0, decision: null, reason: "Unit allotted to an earlier application", bank: null, slot: null, flash: null };
+  const FEED = [];
+  const log = msg => { const d = new Date(); FEED.unshift({ t: d.toTimeString().slice(0, 5), msg }); if (FEED.length > 24) FEED.pop(); renderCRM(); };
+  const STEPS = [
+    ["landing", "Project landing & configurations"], ["config", "Select configuration & inclusions"], ["base", "Base cost sheet preview"], ["unit", "Select wing & unit"], ["parking", "Select parking slot(s)"], ["revise", "Dynamic cost sheet revision"], ["verify", "Mobile OTP + KYC & bank pre-fill"], ["pay", "Token + 5% GST checkout"], ["confirm", "Confirmation, SFDC & WhatsApp sync"], ["review", "48-hour developer review"],
+    ["approved", "Approved · loan banker & agreement", true], ["rejected", "Rejected · automated refund", true],
+  ];
+  const order = id => STEPS.findIndex(s => s[0] === id);
+
+  // ───────────────────────── Helpers ─────────────────────────
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const icon = {
+    back: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    check: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="m3 7.4 2.6 2.6L11 4.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    bigcheck: '<svg width="28" height="28" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="m3 7.4 2.6 2.6L11 4.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    bolt: '<svg viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M8 1 3 8h3l-1 5 5-7H7l1-5Z"/></svg>',
+    car: '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 10V8l1.5-3.5h7L13 8v2M3 10h10M3 10v2m10-2v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    stack: '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 6h10M3 11h10M4 3v10m8-10v10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    sun: '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    lock: '<svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="2.5" y="6" width="9" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="currentColor" stroke-width="1.4"/></svg>',
+    leaf: '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9 18C3 16 2 9 6 3c3 4 6 8 3 15Z" opacity=".75"/><path d="M11 18c6-2 7-9 3-15-3 4-6 8-3 15Z"/></svg>',
+    wa: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>',
+  };
+  const kindIcon = k => k === "EV-ready" ? icon.bolt : k === "Stack" ? icon.stack : k === "Open" ? icon.sun : icon.car;
+  const unit = () => UNITS.find(u => u.id === S.unit);
+  const flatLabel = u => `${u.wing.replace("K", "K-")} · ${u.flat}`;
+  const mmss = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+  const hhmmss = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map(x => String(x).padStart(2, "0")).join(":"); };
+  const rid = (p, n, set = "0123456789") => p + Array.from({ length: n }, () => set[Math.floor(Math.random() * set.length)]).join("");
+  const addWorkingDays = (d, n) => { const x = new Date(d); while (n > 0) { x.setDate(x.getDate() + 1); if (x.getDay() % 6) n--; } return x; };
+  const dfmt = d => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", " + d.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  const stackMark = (size = "") => `<div class="stack ${size}" aria-label="Envogue 2.0"><span>En</span><span>vog</span><span>ue</span><span class="two">2.0${icon.leaf}</span></div>`;
+
+  function go(step) {
+    S.step = step;
+    if (step === "confirm") { S.syncShown = 0; syncAnim(); }
+    render();
+    const sc = $("screen"); if (sc) sc.scrollTop = 0;
+    if (window.innerWidth <= 880) $("phone").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function ensure(step) {
+    const i = order(step);
+    if (i >= order("config") && !S.cfg) S.cfg = "3S";
+    if (i >= order("unit") && !S.unit) { const u = UNITS.find(x => x.key === S.cfg && x.status === "av" && x.floor >= 14) || UNITS.find(x => x.key === S.cfg && x.status === "av"); S.unit = u.id; holdUnit(u); }
+    if (i >= order("revise") && S.parking.length === 0) S.parking = ["PD-EV-03"];
+    if (i >= order("pay") && !S.verified) { S.phone = S.phone || "98765 43210"; S.otpSent = true; S.otp = "246810"; S.verified = true; S.consent = true; }
+    if (i >= order("confirm") && !S.booking) createBooking();
+    if (step === "approved" && S.decision !== "approved") decide("approved");
+    if (step === "rejected" && S.decision !== "rejected") decide("rejected");
+  }
+  function holdUnit(u) { S.holdEnd = Date.now() + 15 * 60 * 1000; log(`Flat ${flatLabel(u)} held for 15 min (web)`); }
+  function createBooking() {
+    const u = unit(); const sh = sheet(u, S.parking, S.addons); const paidAt = new Date();
+    S.booking = { id: rid("ENV2-", 5), pay: rid("pay_", 14, "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789"), sfdc: rid("0065g0000", 6, "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"), paidAt, due: new Date(paidAt.getTime() + 48 * 3600 * 1000), value: sh.total, token: TOKEN, gst: TOKEN * TOKEN_GST / 100 };
+    u.status = "bk"; for (const s of S.parking) TAKEN.add(s); S.holdEnd = null;
+    log(`Token ${inr(TOKEN * 1.05)} captured · ${S.booking.pay}`);
+    log(`Opportunity ${S.booking.sfdc} → “Booked – Under review”`);
+    log(`WhatsApp + SMS receipt sent to +91 ${S.phone || "98765 43210"}`);
+  }
+  function decide(d) {
+    if (!S.booking) createBooking();
+    S.decision = d; S.booking.decidedAt = new Date();
+    if (d === "approved") log(`Approved ${S.booking.id} · RM assigned`);
+    else {
+      S.booking.utr = rid("UTR", 12); S.booking.refundBy = addWorkingDays(S.booking.decidedAt, 3);
+      const u = unit(); if (u) u.status = "av"; for (const s of S.parking) TAKEN.delete(s);
+      log(`Rejected: ${S.reason}`); log(`Auto-refund ${inr(TOKEN * 1.05)} initiated · ${S.booking.utr}`);
+    }
+  }
+  function syncAnim() { const tick = () => { if (S.step !== "confirm") return; S.syncShown++; render(); if (S.syncShown < 6) setTimeout(tick, 420); }; setTimeout(tick, 300); }
+
+  // ───────────────────────── Rail + CRM ─────────────────────────
+  function renderRail() {
+    const cur = order(S.step); const ended = S.step === "approved" || S.step === "rejected";
+    $("flow").innerHTML = STEPS.map(([id, label, branch], i) => {
+      let cls = id === S.step ? "now" : (!branch && (i < cur || ended)) ? "done" : "";
+      const n = branch ? (id === "approved" ? "✓" : "↺") : i + 1;
+      return `<li class="${cls} ${branch ? "branch" : ""}"><button type="button" data-jump="${id}"><span class="dot">${cls === "done" ? icon.check : n}</span><span>${label}</span></button></li>`;
+    }).join("");
+  }
+  function stage() {
+    if (S.decision === "approved") return S.slot ? "Agreement scheduled" : "Approved – Agreement";
+    if (S.decision === "rejected") return "Closed – Refunded";
+    if (S.booking) return "Booked – Under review";
+    if (S.verified) return "KYC verified";
+    if (S.unit) return "Unit held";
+    if (S.cfg) return "Exploring " + CONFIGS[S.cfg].name;
+    return "Website visitor";
+  }
+  function renderCRM() {
+    const u = unit(); const b = S.booking; const sh = u ? sheet(u, S.parking, S.addons) : null;
+    const cls = S.decision === "rejected" ? "warn" : S.decision === "approved" ? "ok" : b ? "red" : "";
+    const rows = [
+      ["Stage", `<span class="pill ${cls}">${stage()}</span>`], ["Project", "Envogue 2.0 · PCMC Central"], ["Buyer", S.verified ? esc(S.name) : "—"], ["Mobile", S.verified ? "+91 " + esc(S.phone || "98765 43210") : "—"],
+      ["Unit", u ? `${flatLabel(u)} · ${CONFIGS[u.key].name}` : "—"], ["Parking", S.parking.length ? S.parking.join(", ") : "—"], ["Final price", sh ? `<span class="tab">${short(sh.total)}</span>` : "—"],
+      ["Token + GST", b ? `<span class="tab">${inr(b.token + b.gst)}</span>` : "—"], ["SFDC ID", b ? `<span class="mono">${b.sfdc}</span>` : "—"],
+      ["Review SLA", b && !S.decision ? `<span class="tab" id="crm-sla">${hhmmss(b.due - Date.now())}</span> left` : S.decision ? (S.decision === "approved" ? "Approved" : "Rejected") : "—"],
+    ];
+    $("crm").innerHTML = rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+    $("decide").innerHTML = b && !S.decision ? `<div class="decide"><p class="lbl" style="margin-top:6px">Developer decision</p>
+      <select class="sel-in" id="reason" aria-label="Rejection reason">${["Unit allotted to an earlier application", "KYC details don't match PAN", "Payment flagged by the bank"].map(r => `<option ${r === S.reason ? "selected" : ""}>${r}</option>`).join("")}</select>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-ink btn-sm" data-decide="approved" type="button">Approve</button><button class="btn btn-line btn-sm" data-decide="rejected" type="button">Reject</button></div></div>` : "";
+    $("feed").innerHTML = FEED.length ? FEED.map(f => `<li><time>${f.t}</time><span>${esc(f.msg)}</span></li>`).join("") : `<li><span>Waiting for the buyer's first tap.</span></li>`;
+  }
+
+  // ───────────────────────── Screens ─────────────────────────
+  function screenLanding() {
+    const av = UNITS.filter(u => u.status === "av").length;
+    return `
+      <div class="hero"><img src="img/towers.jpg" alt="Envogue 2.0 towers, artistic impression"><span class="rera">MahaRERA P52100077680</span>
+        <div class="mark">${stackMark()}<p class="tracked">3 &amp; 4 Bed Suites<br>at PCMC Central</p></div></div>
+      <p class="lead">A structure that rises beautifully and unapologetically. Black is beautiful.</p>
+      <div class="facts"><div class="fact"><b class="tab">${av}</b><span>Homes open now</span></div><div class="fact"><b>G+36</b><span>Six wings, K-1 to K-6</span></div><div class="fact"><b>15</b><span>Signature amenities</span></div></div>
+      <div style="display:grid;gap:4px"><p class="tracked">Choose your home</p><p class="cap">Final prices: GST and every Tayal charge included.</p></div>
+      ${Object.values(CONFIGS).map(c => { const s = cfgSummary(c.key); return `
+        <button type="button" class="cfg" data-cfg="${c.key}" aria-pressed="${S.cfg === c.key}">
+          <span class="e-m">${c.name}</span><span class="px tab">${short(s.min)}<span class="cap" style="display:block;font-weight:500">onwards</span></span>
+          <span class="meta tab">${fmt(c.carpet)} sq.ft carpet · ${c.wing.replace("K", "Wing K-")}</span><span class="meta tab">${s.av} open</span>
+        </button>`; }).join("")}
+      <p class="tracked" style="margin-top:6px">Black is beautiful</p>
+      <div class="strip">${LIFE.map(([src, t]) => `<figure class="shot" style="margin:0"><img src="${src}" alt="${t}, artistic impression" loading="lazy"><span>${t}</span></figure>`).join("")}</div>
+      <div><p class="tracked">PCMC Central, minutes away</p><div class="dist" style="margin-top:6px">${DIST.map(([a, b]) => `<div>${a}</div><div>${b}</div>`).join("")}</div></div>`;
+  }
+  function screenConfig() {
+    const c = CONFIGS[S.cfg]; const s = cfgSummary(S.cfg);
+    return `
+      <div style="display:grid;gap:6px"><p class="tracked">${c.who}</p><h1 class="e-l">${c.title}</h1></div>
+      <div class="seg" role="group" aria-label="Configuration">${Object.values(CONFIGS).map(x => `<button type="button" data-cfg2="${x.key}" aria-pressed="${x.key === S.cfg}">${x.key === "3S" ? "3 Suite" : x.key === "4S" ? "4 Suite" : x.name}</button>`).join("")}</div>
+      <figure class="plan" style="margin:0"><img src="${c.plan}" alt="${c.name} floor plan"><figcaption><span>${c.name} · ${fmt(c.carpet)} sq.ft RERA carpet</span><span>Typical floor plan</span></figcaption></figure>
+      <div class="kv"><div><span>Final price from</span><b class="tab">${short(s.min)}</b></div><div><span>Up to</span><b class="tab">${short(s.max)}</b></div><div><span>Open now</span><b class="tab">${s.av} of ${s.n}</b></div></div>
+      <div style="display:grid;gap:10px"><p class="tracked">Included in the price</p><ul class="specs">${SPECS.map(x => `<li>${x}</li>`).join("")}</ul></div>`;
+  }
+  function sheetHTML(sh, flashKeys = []) {
+    const row = l => `<div class="line ${flashKeys.includes(l.k) ? "new" : ""}"><div class="k">${l.t}${l.s ? `<small>${l.s}</small>` : ""}</div><div class="v">${inr(l.v)}</div></div>`;
+    return `<div class="card sheet">${sh.lines.map(row).join("")}${row({ k: "gst", t: "GST 5%", s: "Under-construction residential", v: sh.gst })}<div class="line sub"><div class="k">Tayal final price</div><div class="v">${inr(sh.total)}</div></div></div>
+      <div class="card sheet"><p class="tracked" style="padding-top:12px">Paid to the government at registration</p>${sh.gov.map(row).join("")}</div>`;
+  }
+  function screenBase() {
+    const s = cfgSummary(S.cfg); const u = s.rep; const sh = sheet(u);
+    return `
+      <div style="display:grid;gap:8px"><h1 class="t-tayal">You want the final price?<br><span class="r">You're looking at it.</span></h1><p class="lead">No inflated numbers. No dramatic reductions.</p></div>
+      <div class="total"><div><small>${CONFIGS[S.cfg].name} · from</small><span class="cap">${u.wing.replace("K", "Wing K-")}, floor ${u.floor}, ${fmt(u.carpet)} sq.ft</span></div><span class="big tab">${short(sh.total)}</span></div>
+      <div class="promise"><span>Straightforward pricing</span><span>No artificial mark-ups</span><span>No last-minute bargaining</span><span>One clear value proposition</span></div>
+      ${sheetHTML(sh)}
+      <div class="zero"><b>#</b><span>Zero Negotiation Policy.<br><span class="cap" style="font-weight:500">The same price for every buyer, online or at the lounge.</span></span></div>`;
+  }
+  function screenUnit() {
+    const C = CONFIGS[S.cfg]; const W = WINGS[C.wing]; const u = unit();
+    let rows = "";
+    for (let f = W.to; f >= W.from; f--) {
+      if (W.refuge.includes(f)) { rows += `<div class="refuge"><span class="fl" style="font-size:10px;color:var(--muted);text-align:center">${f}</span><span>Refuge floor</span></div>`; continue; }
+      rows += `<div class="frow"><span class="fl">${f}</span>`;
+      for (let s = 1; s <= 4; s++) {
+        const x = UNITS.find(v => v.id === `${C.wing}-${f}${String(s).padStart(2, "0")}`);
+        const match = x.key === S.cfg; const can = match && x.status === "av";
+        rows += `<button type="button" class="u ${x.status} ${S.unit === x.id ? "sel" : ""}" style="${match ? "" : "opacity:.25"}" data-unit="${x.id}" ${can ? "" : "disabled"} aria-label="Flat ${x.flat}, ${CONFIGS[x.key].name}, ${x.status === "av" ? "available" : x.status === "hd" ? "on hold" : "booked"}">${x.status === "bk" ? "" : x.flat}</button>`;
+      }
+      rows += `</div>`;
+    }
+    const sh = u ? sheet(u) : null;
+    return `
+      <div style="display:grid;gap:6px"><p class="tracked">${W.name} · ${C.name}</p><h1 class="e-l">Pick your floor &amp; flat</h1></div>
+      <div class="legend"><span><i class="sw av"></i>Available</span><span><i class="sw hd"></i>On hold</span><span><i class="sw bk"></i>Booked</span><span><i class="sw sel"></i>Yours</span></div>
+      ${u ? `<div class="card unit-card enter">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="e-m">Flat ${u.flat}</span><span class="chip red">Held for you</span></div>
+        <div class="kv"><div><span>Carpet</span><b class="tab">${fmt(u.carpet)} sq.ft</b></div><div><span>Floor</span><b class="tab">${u.floor} of 36</b></div><div><span>Final price</span><b class="tab">${short(sh.total)}</b></div></div>
+      </div>` : ""}
+      <div class="bldg"><div class="floors">${rows}</div><div class="colhead"><span></span><span>01</span><span>02</span><span>03</span><span>04</span></div></div>`;
+  }
+  function screenParking() {
+    const lim = LIMIT[S.cfg]; const zones = ZONES.filter(z => z.level === S.level);
+    const bays = z => {
+      const ids = Array.from({ length: z.n }, (_, i) => `${z.id}-${String(i + 1).padStart(2, "0")}`); const half = Math.ceil(ids.length / 2);
+      const mk = list => `<div class="bays">${list.map(id => { const taken = TAKEN.has(id) && !S.parking.includes(id); const sel = S.parking.includes(id); return `<button type="button" class="bay ${taken ? "taken" : ""} ${sel ? "sel" : ""}" data-bay="${id}" ${taken ? "disabled" : ""} aria-pressed="${sel}" aria-label="Bay ${id}${taken ? ", taken" : ""}">${kindIcon(z.kind)}<span>${id.slice(-2)}</span></button>`; }).join("")}</div>`;
+      return `<div class="zone"><h4>${z.kind} <span>${z.price ? short(z.price) + " / bay" : "Free"} · ${z.note}</span></h4>${mk(ids.slice(0, half))}<div class="lane"><span>Drive lane</span></div>${mk(ids.slice(half))}</div>`;
+    };
+    return `
+      <div style="display:grid;gap:6px"><p class="tracked">Up to ${lim} bay${lim > 1 ? "s" : ""} for a ${CONFIGS[S.cfg].name}</p><h1 class="e-l">Choose your parking</h1><p class="cap">Pick a level, then tap a bay. Hatched bays are already allotted.</p></div>
+      <div class="seg" role="group" aria-label="Level">${LEVELS.map(l => `<button type="button" data-level="${l}" aria-pressed="${l === S.level}">${l.replace("Basement ", "B")}</button>`).join("")}</div>
+      <div class="lot">${zones.map(bays).join("")}</div>
+      ${S.parking.length ? `<div class="chips">${S.parking.map(p => { const z = zoneOf(p); return `<span class="chip red">${p} · ${z.price ? short(z.price) : "Free"}</span>`; }).join("")}</div>` : `<p class="note">No car? You can continue without parking.</p>`}`;
+  }
+  function screenRevise() {
+    const u = unit(); const base = sheet(u); const sh = sheet(u, S.parking, S.addons);
+    return `
+      <div style="display:grid;gap:6px"><p class="tracked">Your cost sheet · live</p><h1 class="e-l">Flat ${u.flat}, priced to the rupee.</h1></div>
+      <div class="card" style="padding:14px 16px;display:grid;gap:6px;font-size:13.5px">
+        <div style="display:flex;justify-content:space-between"><span class="cap">Home, final price</span><span class="tab">${inr(base.total)}</span></div>
+        <div style="display:flex;justify-content:space-between"><span class="cap">Parking ${S.parking.length ? "× " + S.parking.length : ""}</span><span class="tab">+ ${inr(sh.pk)}</span></div>
+        <div style="display:flex;justify-content:space-between"><span class="cap">Upgrades</span><span class="tab">+ ${inr(sh.ad)}</span></div>
+        <div style="display:flex;justify-content:space-between"><span class="cap">GST on the above</span><span class="tab">+ ${inr(sh.gst - base.gst)}</span></div>
+      </div>
+      <div style="display:grid;gap:8px"><p class="tracked">Add upgrades (optional)</p>
+        ${ADDONS.map(a => `<button type="button" class="addon" data-addon="${a.id}" aria-pressed="${S.addons.includes(a.id)}"><span class="tick">${S.addons.includes(a.id) ? icon.check : ""}</span><span class="a-t"><b>${a.t}</b><small>${a.d}</small></span><span class="a-p">+ ${short(a.p[u.bhk])}</span></button>`).join("")}
+      </div>
+      <p class="tracked">Full breakup</p>
+      ${sheetHTML(sh, S.flash ? [S.flash] : [])}`;
+  }
+  function screenVerify() {
+    if (!S.otpSent) return `
+      <div style="display:grid;gap:6px"><p class="tracked">Step 1 of 2 · Verify</p><h1 class="e-l">Your mobile number</h1><p class="lead">We'll send a one-time code. Your KYC and bank details are fetched after this, so there's nothing to type.</p></div>
+      <div class="fld"><label for="mobile">Mobile number</label><input class="in tab" id="mobile" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile" maxlength="16" value="${esc(S.phone)}"><span class="err" id="mobile-err"></span></div>
+      <p class="cap" style="display:flex;gap:6px;align-items:center">${icon.lock} Used only for this booking. Never shared with brokers.</p>`;
+    if (!S.verified) return `
+      <div style="display:grid;gap:6px"><p class="tracked">Step 1 of 2 · Verify</p><h1 class="e-l">Enter the 6-digit code</h1><p class="lead">Sent by SMS to +91 ${esc(S.phone)}.</p></div>
+      <div class="fld"><label for="otp">One-time code</label><input class="in otp tab" id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="${esc(S.otp)}"><span class="err" id="otp-err"></span></div>
+      <button type="button" class="btn btn-line btn-sm" data-act="demo-otp" style="justify-self:start">Fill demo code</button>`;
+    if (S.fetching) return `
+      <div style="display:grid;gap:6px"><p class="tracked">Step 2 of 2 · KYC</p><h1 class="e-l">Fetching your verified details…</h1><p class="cap">From CKYC and DigiLocker, with your consent.</p></div>
+      <div class="card" style="padding:16px;display:grid;gap:12px">${'<div class="skeleton"></div>'.repeat(6)}</div>`;
+    return `
+      <div style="display:grid;gap:6px"><p class="tracked">Step 2 of 2 · KYC</p><h1 class="e-l">Check your details</h1><p class="lead">Pre-filled from your verified records. Fix anything that's wrong.</p></div>
+      <div class="fld"><label for="name">Name as on PAN</label><input class="in" id="name" value="${esc(S.name)}" autocomplete="name"></div>
+      <div class="fld"><label for="email">Email for documents</label><input class="in" id="email" type="email" value="${esc(S.email)}" autocomplete="email"></div>
+      <div class="card"><div class="vrow"><span>PAN</span><b class="mono">ABCPD••••K <span class="chip ok">${icon.check} Verified</span></b></div><div class="vrow"><span>Aadhaar</span><b class="mono">•••• 4821 <span class="chip ok">${icon.check} DigiLocker</span></b></div><div class="vrow"><span>Address</span><b>Baner, Pune 411045</b></div></div>
+      <div class="card"><div class="vrow"><span>Refund account</span><b>HDFC Bank ••••6620</b></div><div class="vrow"><span>IFSC</span><b class="mono">HDFC0000123</b></div><div class="vrow"><span>Name match</span><b><span class="chip ok">${icon.check} ₹1 penny-drop</span></b></div></div>
+      <label class="consent"><input type="checkbox" id="consent" ${S.consent ? "checked" : ""}> <span>I agree to the booking terms. If Tayal doesn't approve this booking within 48 hours, the full token is refunded to this account automatically.</span></label>`;
+  }
+  function screenPay() {
+    const u = unit(); const gst = TOKEN * TOKEN_GST / 100;
+    const methods = [["upi", "UPI", "UPI", "Any UPI app · instant"], ["card", "CARD", "Card", "Credit or debit card"], ["nb", "NET", "Netbanking", "50+ banks"]];
+    return `
+      <div style="display:grid;gap:6px"><p class="tracked">Secure checkout</p><h1 class="e-l">Pay the booking token</h1><p class="lead">Adjusted against your 10% booking amount. Fully refundable if not approved.</p></div>
+      <div class="card pay-sum">
+        <div class="row"><span>Flat ${flatLabel(u)} · token</span><span class="tab">${inr(TOKEN)}</span></div>
+        <div class="row"><span>GST on advance (5%)</span><span class="tab">${inr(gst)}</span></div>
+        <div class="row t"><span>Pay now</span><span class="tab">${inr(TOKEN + gst)}</span></div>
+        <p class="cap">Payee: Zenethist Realty LLP (promoter, Envogue 2.0) · RERA collection account</p>
+      </div>
+      <div style="display:grid;gap:8px">${methods.map(([id, ic, t, d]) => `<button type="button" class="method" data-method="${id}" aria-pressed="${S.method === id}"><span class="ic">${ic}</span><span><b style="display:block;font-size:14px;font-weight:600">${t}</b><small class="cap">${d}</small></span><span class="radio"></span></button>`).join("")}</div>
+      <p class="cap" style="display:flex;gap:6px;align-items:center">${icon.lock} PCI-DSS gateway · 256-bit encryption</p>
+      ${S.paying ? `<div class="overlay"><div style="text-align:center"><div class="spinner"></div><p style="font-weight:600">Confirming with your bank…</p><p class="cap">Don't close this screen</p></div></div>` : ""}`;
+  }
+  function screenConfirm() {
+    const b = S.booking; const u = unit();
+    const items = [["Payment captured", `${inr(b.token + b.gst)} · ${b.pay}`], ["Booking created in Salesforce", `Opportunity ${b.sfdc}`], [`Flat ${flatLabel(u)} blocked`, "Removed from live inventory for everyone"], ["Receipt sent on WhatsApp", `To +91 ${S.phone || "98765 43210"}`], ["SMS receipt sent", "With your booking ID and amount"], ["Sent for developer review", "Decision within 48 hours"]];
+    const done = S.syncShown >= items.length;
+    return `
+      <div class="success"><div class="seal">${icon.bigcheck}</div><p class="tracked">Booking received</p><h1 class="e-l">Flat ${u.flat} is held in your name.</h1><p class="cap">Booking ID <span class="mono">${b.id}</span></p></div>
+      <div class="card"><ul class="sync">${items.slice(0, S.syncShown).map(([t, s]) => `<li><span class="ok-ic">${icon.check}</span><span>${t}<small>${s}</small></span></li>`).join("")}${!done ? `<li><span class="spinner" style="width:22px;height:22px;border-width:2px;margin:0"></span><span class="cap">Syncing…</span></li>` : ""}</ul></div>
+      ${done ? `<a class="btn btn-line btn-block" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(`We just booked Flat ${u.flat} (${u.wing}) at Tayal Envogue 2.0, PCMC Central! Booking ID ${b.id}.`)}">${icon.wa} Share with family</a>` : ""}`;
+  }
+  function screenReview() {
+    const b = S.booking; const left = b.due - Date.now(); const frac = Math.max(0, Math.min(1, left / (48 * 3600 * 1000))); const C = 2 * Math.PI * 90;
+    return `
+      <div style="display:grid;gap:6px;text-align:center"><p class="tracked">Developer review</p><h1 class="e-l">We'll confirm by ${dfmt(b.due)}.</h1></div>
+      <div class="ring"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" style="fill:none;stroke:var(--line-soft)" stroke-width="3"/><circle id="ring-arc" cx="100" cy="100" r="90" style="fill:none;stroke:var(--accent)" stroke-width="3" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/></svg><div class="c"><b id="ring-t">${hhmmss(left)}</b><span class="cap">time left</span></div></div>
+      <ol class="timeline"><li class="done">Token paid<small>${dfmt(b.paidAt)}</small></li><li class="done">KYC &amp; refund account verified<small>PAN, Aadhaar, penny-drop</small></li><li class="now">Tayal sales &amp; legal review<small>Allotment, KYC match, channel-partner tagging</small></li><li>Decision<small>Approved: banker &amp; agreement. Not approved: automatic refund.</small></li></ol>
+      <p class="note">Nothing to do. We'll message you on WhatsApp the moment there's a decision.</p>`;
+  }
+  function screenApproved() {
+    const u = unit(); const b = S.booking; const slots = ["Sat · 11:00", "Sat · 15:30", "Sun · 11:00"];
+    return `
+      <div class="photo-banner"><img src="img/lobby.jpg" alt="Envogue 2.0 arrival lobby, artistic impression"></div>
+      <div class="success enter" style="margin-top:-46px;position:relative"><div class="seal" style="background:var(--bg)">${icon.bigcheck}</div><p class="tracked">Approved · ${dfmt(b.decidedAt)}</p><h1 class="e-l">Welcome to the Tayal family.</h1><p class="lead">Flat ${flatLabel(u)} is allotted to ${esc(S.name.split(" ")[0])}. Two things left.</p></div>
+      <div style="display:grid;gap:8px"><p class="tracked">1 · Connect with a home-loan banker</p>
+        ${BANKS.map(([k, n]) => `<button type="button" class="bank" data-bank="${k}" aria-pressed="${S.bank === k}"><span class="mk">${k}</span><span style="flex:1"><b style="display:block;font-size:14px;font-weight:600">${n}</b><small class="cap">${S.bank === k ? "Banker will call within 2 working hours" : "Request a call-back"}</small></span>${S.bank === k ? `<span class="chip ok">${icon.check}</span>` : ""}</button>`).join("")}
+        <p class="cap">Partner list is illustrative.</p></div>
+      <div class="card" style="padding:16px;display:grid;gap:12px"><p class="tracked">2 · Sign the agreement for sale</p>
+        <div style="display:flex;gap:12px;align-items:center"><span class="mk" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--accent);display:grid;place-items:center;font-weight:700;font-size:12px">NK</span><span><b style="display:block;font-weight:600">Neha Kulkarni</b><small class="cap">Your relationship manager (demo)</small></span></div>
+        <p class="cap">Pick a slot at the Envogue 2.0 site, Old Mumbai Rd., PCMC Central. Stamp duty and registration are paid on the day.</p>
+        <div class="slots">${slots.map(s => `<button type="button" class="slot" data-slot="${s}" aria-pressed="${S.slot === s}">${s}</button>`).join("")}</div>
+        ${S.slot ? `<p class="chip ok" style="justify-self:start">${icon.check} ${S.slot} · added to CRM</p>` : ""}</div>`;
+  }
+  function screenRejected() {
+    const b = S.booking;
+    return `
+      <div class="success enter"><div class="seal warn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><p class="tracked" style="color:var(--warn)">Not approved</p><h1 class="e-l">Your ${inr(b.token + b.gst)} is on its way back.</h1><p class="lead">Reason: ${esc(S.reason)}.</p></div>
+      <div class="card" style="padding:16px 0 0"><ol class="timeline">
+        <li class="done">Refund initiated automatically<small>${dfmt(b.decidedAt)} · <span class="mono">${b.utr}</span></small></li>
+        <li class="now">Bank processing<small>To HDFC Bank ••••6620, verified at booking</small></li>
+        <li>Credited<small>By ${b.refundBy.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })} (3 working days)</small></li></ol></div>
+      <p class="note">Token ${inr(b.token)} and GST ${inr(b.gst)} are both refunded. Nothing to fill, nothing to chase.</p>`;
+  }
+  const SCREENS = { landing: screenLanding, config: screenConfig, base: screenBase, unit: screenUnit, parking: screenParking, revise: screenRevise, verify: screenVerify, pay: screenPay, confirm: screenConfirm, review: screenReview, approved: screenApproved, rejected: screenRejected };
+  const TITLES = { landing: ["Tayal Corp", "Envogue 2.0"], base: ["Step 1 of 6", "The final price"], unit: ["Step 2 of 6", "Wing & flat"], parking: ["Step 3 of 6", "Parking"], revise: ["Step 4 of 6", "Your cost sheet"], verify: ["Step 5 of 6", "Verify & KYC"], pay: ["Step 6 of 6", "Payment"], confirm: ["Done", "Booking received"], review: ["Status", "Developer review"], approved: ["Status", "Approved"], rejected: ["Status", "Refund"] };
+  const BACK = { config: "landing", base: "config", unit: "base", parking: "unit", revise: "parking", verify: "revise", pay: "verify" };
+
+  function renderAppbar() {
+    const [sm, st] = S.step === "config" ? ["Configuration", CONFIGS[S.cfg].name] : TITLES[S.step];
+    const back = BACK[S.step]; const showHold = S.holdEnd && ["unit", "parking", "revise", "verify", "pay"].includes(S.step);
+    $("appbar").innerHTML = `${back ? `<button type="button" class="back" data-back="${back}" aria-label="Back">${icon.back}</button>` : `<span class="emark" aria-hidden="true">En<br>vog<br>ue</span>`}
+      <div class="t"><small>${sm}</small><strong>${st}</strong></div>
+      ${showHold ? `<span class="hold" title="This home is held for you"><i></i><span class="tab" id="hold-t">${mmss(S.holdEnd - Date.now())}</span></span>` : ""}`;
+  }
+  function renderCTA() {
+    const el = $("cta"); const u = unit(); let h = "";
+    const sum = (k, v) => `<div class="cta-sum"><span>${k}</span><b class="tab">${v}</b></div>`;
+    switch (S.step) {
+      case "landing": h = `<button class="btn btn-ink btn-block" data-next="config" ${S.cfg ? "" : "disabled"} type="button">${S.cfg ? `Continue with ${CONFIGS[S.cfg].name}` : "Choose a home above"}</button>`; break;
+      case "config": h = `<button class="btn btn-red btn-block" data-next="base" type="button">Book now</button>`; break;
+      case "base": h = `<button class="btn btn-ink btn-block" data-next="unit" type="button">Choose your flat</button>`; break;
+      case "unit": h = u ? sum("Final price · flat " + u.flat, short(sheet(u).total)) + `<button class="btn btn-ink btn-block" data-next="parking" type="button">Continue to parking</button>` : `<button class="btn btn-ink btn-block" disabled type="button">Tap an available flat</button>`; break;
+      case "parking": { const lim = LIMIT[S.cfg]; h = sum(`${S.parking.length} of ${lim} bay${lim > 1 ? "s" : ""}`, "+ " + short(S.parking.reduce((t, p) => t + zoneOf(p).price, 0))) + `<button class="btn btn-ink btn-block" data-next="revise" type="button">${S.parking.length ? "See revised cost sheet" : "Continue without parking"}</button>`; break; }
+      case "revise": { const sh = sheet(u, S.parking, S.addons); h = sum("Tayal final price", inr(sh.total)) + `<button class="btn btn-ink btn-block" data-next="verify" type="button">Looks right · book it</button>`; break; }
+      case "verify": h = !S.otpSent ? `<button class="btn btn-ink btn-block" data-act="send-otp" type="button">Send code</button>` : !S.verified ? `<button class="btn btn-ink btn-block" data-act="verify-otp" type="button">Verify</button>` : S.fetching ? `<button class="btn btn-ink btn-block" disabled type="button">Fetching…</button>` : `<button class="btn btn-ink btn-block" data-act="kyc-ok" ${S.consent ? "" : "disabled"} type="button">Continue to payment</button>`; break;
+      case "pay": h = `<button class="btn btn-red btn-block" data-act="pay" ${S.paying ? "disabled" : ""} type="button">${icon.lock} Pay ${inr(TOKEN * 1.05)}</button>`; break;
+      case "confirm": h = S.syncShown >= 6 ? `<button class="btn btn-ink btn-block" data-next="review" type="button">Track review status</button>` : ""; break;
+      case "review": h = `<p class="cap" style="text-align:center">Prototype: decide as the builder${window.innerWidth <= 1200 ? " below" : " on the right"}, or here.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-ink btn-sm" data-decide="approved" type="button">Approve</button><button class="btn btn-line btn-sm" data-decide="rejected" type="button">Reject</button></div>`; break;
+      case "approved": h = `<a class="btn btn-line btn-block" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(`Our home at Tayal Envogue 2.0 is confirmed! Flat ${u.flat}, ${u.wing}.`)}">${icon.wa} Share the news</a>`; break;
+      case "rejected": h = `<button class="btn btn-ink btn-block" data-act="restart" type="button">Explore other flats</button>`; break;
+    }
+    el.innerHTML = h; el.hidden = !h;
+  }
+  function render() {
+    $("screen").innerHTML = `<div class="pad ${["landing", "approved"].includes(S.step) ? "flush" : ""} enter">${SCREENS[S.step]()}</div>`;
+    renderAppbar(); renderCTA(); renderRail(); renderCRM(); S.flash = null;
+  }
+
+  // ───────────────────────── Events ─────────────────────────
+  document.addEventListener("click", e => {
+    const t = e.target.closest("button, a"); if (!t) return; const d = t.dataset;
+    if (d.jump) { ensure(d.jump); go(d.jump); return; }
+    if (d.cfg) { S.cfg = d.cfg; log(`Viewed ${CONFIGS[S.cfg].name}`); render(); return; }
+    if (d.cfg2) { if (S.cfg !== d.cfg2) { S.cfg = d.cfg2; S.unit = null; S.parking = []; S.addons = []; S.holdEnd = null; } render(); return; }
+    if (d.next) { if (d.next === "base") log(`“Book now” tapped · ${CONFIGS[S.cfg].name}`); if (d.next === "unit" && unit() && unit().key !== S.cfg) S.unit = null; go(d.next); return; }
+    if (d.back) { go(d.back); return; }
+    if (d.unit) { const u = UNITS.find(x => x.id === d.unit); if (S.unit !== u.id) { S.unit = u.id; S.parking = []; holdUnit(u); } const keep = $("screen").scrollTop; render(); $("screen").scrollTop = keep; return; }
+    if (d.level) { S.level = d.level; render(); return; }
+    if (d.bay) { const lim = LIMIT[S.cfg]; if (S.parking.includes(d.bay)) S.parking = S.parking.filter(x => x !== d.bay); else if (S.parking.length < lim) S.parking = [...S.parking, d.bay]; else S.parking = [...S.parking.slice(1), d.bay]; render(); return; }
+    if (d.addon) { const on = S.addons.includes(d.addon); S.addons = on ? S.addons.filter(x => x !== d.addon) : [...S.addons, d.addon]; S.flash = on ? null : "a-" + d.addon; const keep = $("screen").scrollTop; render(); $("screen").scrollTop = keep; return; }
+    if (d.method) { S.method = d.method; render(); return; }
+    if (d.bank) { S.bank = d.bank; log(`Loan call-back requested · ${d.bank}`); render(); return; }
+    if (d.slot) { S.slot = d.slot; log(`Agreement signing booked · ${d.slot}`); render(); return; }
+    if (d.decide) { const r = $("reason"); if (r) S.reason = r.value; decide(d.decide); go(d.decide); return; }
+    if (d.act === "send-otp") { let v = ($("mobile")?.value || "").replace(/\D/g, ""); if (v.length === 12 && v.startsWith("91")) v = v.slice(2); if (v.length === 11 && v.startsWith("0")) v = v.slice(1); if (!/^[6-9]\d{9}$/.test(v)) { $("mobile-err").textContent = "Enter a 10-digit Indian mobile number."; return; } S.phone = v.slice(0, 5) + " " + v.slice(5); S.otpSent = true; log(`OTP sent to +91 ${S.phone}`); render(); setTimeout(() => $("otp")?.focus(), 50); return; }
+    if (d.act === "demo-otp") { S.otp = "246810"; render(); return; }
+    if (d.act === "verify-otp") { const v = ($("otp")?.value || "").trim(); if (!/^\d{6}$/.test(v)) { $("otp-err").textContent = "Enter all 6 digits. Any 6 digits work in this demo."; return; } S.otp = v; S.verified = true; S.fetching = true; log("Mobile verified · fetching CKYC & bank"); render(); setTimeout(() => { S.fetching = false; log("KYC pre-filled · penny-drop name match"); if (S.step === "verify") render(); }, 1100); return; }
+    if (d.act === "kyc-ok") { S.name = $("name")?.value || S.name; S.email = $("email")?.value || S.email; go("pay"); return; }
+    if (d.act === "pay") { S.paying = true; render(); setTimeout(() => { S.paying = false; createBooking(); go("confirm"); }, 1600); return; }
+    if (d.act === "restart") { S.unit = null; S.parking = []; S.addons = []; S.booking = null; S.decision = null; S.bank = null; S.slot = null; S.syncShown = 0; go("unit"); return; }
+  });
+  document.addEventListener("change", e => { if (e.target.id === "consent") { S.consent = e.target.checked; renderCTA(); } if (e.target.id === "reason") S.reason = e.target.value; });
+  document.addEventListener("input", e => { if (e.target.id === "otp") e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6); if (e.target.id === "name") S.name = e.target.value; if (e.target.id === "email") S.email = e.target.value; });
+  setInterval(() => {
+    const now = Date.now(); const ht = $("hold-t"); if (ht && S.holdEnd) ht.textContent = mmss(S.holdEnd - now);
+    if (S.booking && !S.decision) { const left = S.booking.due - now; const rt = $("ring-t"); if (rt) rt.textContent = hhmmss(left); const arc = $("ring-arc"); if (arc) { const C = 2 * Math.PI * 90; arc.setAttribute("stroke-dashoffset", C * (1 - Math.max(0, left / (48 * 3600 * 1000)))); } const sla = $("crm-sla"); if (sla) sla.textContent = hhmmss(left); }
+    const c = $("clock"); if (c) { const d = new Date(); c.textContent = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0"); }
+  }, 1000);
+
+  // ───────────────────────── Design system view ─────────────────────────
+  function renderDS() {
+    const tayal = [["Tayal Red", "--red", "#BE0A0A", "The one corporate accent: emphasis, the logo block, frame lines"], ["Ink", "--ink", "#111111", "Headlines, body, primary buttons"], ["Paper", "--paper", "#FFFFFF", "Corporate ground"], ["Mist", "--mist", "#F4F4F2", "Quiet bands"], ["Line", "--line", "#DCDCDC", "Hairlines, info pills"]];
+    const env = [["Envogue Black", "--e-bg", "#0A0A0A", "The Envogue 2.0 world"], ["Ivory", "--e-ivory", "#F3EFE8", "Type and available homes on black"], ["Signal Red", "--e-red", "#D9161D", "Tayal red tuned for black: commit, select"], ["Leaf", "--e-leaf", "#7CC242", "Only in the Envogue 2.0 mark"], ["Ash", "--e-muted", "#9C978F", "Secondary text on black"]];
+    const sw = ([n, v, hex, use]) => `<div class="swatch"><div class="c" style="background:var(${v})"></div><div class="m"><b>${n}</b><span class="mono">${v} · ${hex}</span><span class="cap">${use}</span></div></div>`;
+    $("ds").innerHTML = `
+      <div class="ds-hero"><p class="eyebrow">Tayal Corp · Design system v0.1</p><h1 class="t-tayal">Final price.<br><span class="r">Final word.</span></h1><p style="max-width:64ch;color:var(--ink-soft)">Tayal's buyer-app system, built from tayalcorp.com and the Envogue 2.0 brochure. The corporate layer speaks in ink, white and one Tayal red, with heavy uppercase serif headlines. Each project brings its own world inside the app: Envogue 2.0 is black, ivory Didone and a single green leaf.</p></div>
+
+      <section class="ds-sec"><header><p class="lbl">Two layers</p><h2 class="t-tayal">Brand &amp; project</h2></header>
+        <div class="duo">
+          <div class="world tayal frame"><div class="logo" style="justify-items:start"><i></i><b>TΛYΛL</b></div><p class="t-tayal" style="font-size:26px">You want the final price?<br><span class="r">You're looking at it.</span></p><p class="cap">Corporate: trust, pricing, the builder panel.</p></div>
+          <div class="world envogue">${stackMark()}<p class="tracked" style="color:var(--e-muted)">3 &amp; 4 Bed Suites at PCMC Central</p><p class="cap">Project: the buyer's booking app for Envogue 2.0.</p></div>
+        </div>
+      </section>
+
+      <section class="ds-sec"><header><p class="lbl">Principles</p><h2 class="t-tayal">How it behaves</h2></header>
+        <div class="principles">${[["One clear price", "Every price is final: GST and every Tayal charge in, government charges shown apart. #ZeroNegotiationPolicy."], ["One decision per screen", "Each screen asks one question with one primary button."], ["Status is labelled", "Available, on hold and booked carry a word, a fill and a pattern. Red is never the only signal."], ["Calm motion", "Under 300 ms, transform and opacity only, a 0.97 press on every button."]].map(([t, d]) => `<div class="principle"><h3>${t}</h3><p class="cap" style="font-size:13.5px">${d}</p></div>`).join("")}</div>
+      </section>
+
+      <section class="ds-sec"><header><p class="lbl">Colour</p><h2 class="t-tayal">Tokens</h2></header>
+        <p class="lbl">Tayal corporate</p><div class="ds-grid">${tayal.map(sw).join("")}</div>
+        <p class="lbl">Envogue 2.0</p><div class="ds-grid">${env.map(sw).join("")}</div>
+      </section>
+
+      <section class="ds-sec"><header><p class="lbl">Typography</p><h2 class="t-tayal">Three voices</h2></header>
+        <div>
+          <div class="spec"><div class="meta">Tayal voice · Playfair Display 800, uppercase</div><div class="t-tayal" style="font-size:40px">Trendsetters in <span class="r">real estate</span></div></div>
+          <div class="spec"><div class="meta">Wordmark · Noto Serif Display</div><div class="logo" style="justify-items:start"><i></i><b style="font-size:34px">TΛYΛL</b></div></div>
+          <div class="spec"><div class="meta">Envogue voice · Bodoni Moda</div><div style="font-family:var(--f-envogue);font-size:46px;line-height:1">Black is <i>beautiful</i></div></div>
+          <div class="spec"><div class="meta">UI &amp; body · Montserrat</div><p style="max-width:60ch;color:var(--ink-soft)">Adjusted against your 10% booking amount. Fully refundable if the booking isn't approved within 48 hours.</p></div>
+          <div class="spec"><div class="meta">Labels · Montserrat 600, +0.28em</div><p class="lbl">3 &amp; 4 Bed Suites at PCMC Central</p></div>
+          <div class="spec"><div class="meta">Documents · IBM Plex Mono</div><p class="mono" style="font-size:15px">P52100077680 · 0065g0000A1B2C3 · UTR418820193345</p></div>
+        </div>
+      </section>
+
+      <section class="ds-sec"><header><p class="lbl">Components</p><h2 class="t-tayal">Live components</h2><p class="cap">The same classes run the prototype.</p></header>
+        <div class="comp-grid">
+          <div class="comp light"><p class="lbl">Buttons · corporate</p><div class="row"><button class="btn btn-ink" type="button">Schedule site visit</button><button class="btn btn-red" type="button">Book now</button><button class="btn btn-line" type="button">Know more</button></div><p class="cap">Square, uppercase, tracked, as on tayalcorp.com. Red only for the commitment moment.</p></div>
+          <div class="comp dark"><p class="lbl">Buttons · Envogue</p><div class="row"><button class="btn btn-ink" type="button">Choose your flat</button><button class="btn btn-red" type="button">Pay ₹2,10,000</button></div><div class="legend"><span><i class="sw av"></i>Available</span><span><i class="sw hd"></i>On hold</span><span><i class="sw bk"></i>Booked</span><span><i class="sw sel"></i>Yours</span></div></div>
+          <div class="comp light frame"><p class="lbl">Frame lines &amp; dot rule</p><p style="font-size:13.5px;color:var(--ink-soft)">Tayal's red rounded-corner frame marks the one thing that matters on a panel. The dot rule opens a section.</p><div class="dotline" style="margin:0"><i></i></div></div>
+          <div class="comp dark"><p class="lbl">Cost line &amp; final price</p><div class="card sheet"><div class="line"><div class="k">Parking · Podium EV-ready<small>Bay PD-EV-03</small></div><div class="v">₹6,50,000</div></div></div><div class="total"><div><small>Tayal final price</small></div><span class="big tab">₹1.80 Cr</span></div></div>
+          <div class="comp dark"><p class="lbl">Parking bays</p><div class="bays" style="grid-template-columns:repeat(4,1fr)"><button class="bay" type="button">${icon.bolt}<span>01</span></button><button class="bay sel" type="button">${icon.bolt}<span>02</span></button><button class="bay taken" type="button" disabled>${icon.bolt}<span>03</span></button><button class="bay" type="button">${icon.car}<span>04</span></button></div></div>
+          <div class="comp light"><p class="lbl">Pills</p><div class="row"><span class="pill">Location · PCMC Central</span><span class="pill red">Booked – Under review</span><span class="pill ok">Approved</span><span class="pill warn">Refund initiated</span></div></div>
+        </div>
+      </section>`;
+  }
+
+  // ───────────────────────── Routing ─────────────────────────
+  function route() {
+    const sys = location.hash === "#system";
+    $("view-proto").hidden = sys; $("view-system").hidden = !sys;
+    $("v-proto").setAttribute("aria-current", sys ? "false" : "page"); $("v-system").setAttribute("aria-current", sys ? "page" : "false");
+    if (sys && !$("ds").innerHTML) renderDS();
+  }
+  window.addEventListener("hashchange", route);
+  route(); render();
+})();
+</script>
+
+</html>
