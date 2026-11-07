@@ -3,8 +3,9 @@
 # build serves it at /flat-bb/tayal/ (additive: the main app is untouched).
 set -euo pipefail
 cd "$(dirname "$0")/.."
+rm -rf public/tayal/img
 mkdir -p public/tayal/img
-cp prototype/img/*.jpg public/tayal/img/
+cp prototype/img/*.webp public/tayal/img/
 {
   printf '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
   printf '<style>body{margin:0}[hidden]{display:none!important}</style>\n'
